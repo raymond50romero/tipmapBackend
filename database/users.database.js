@@ -8,21 +8,29 @@ import { user } from './models/users.model.js';
  * @param {string} username
  * @param {string} password
  *
- * @returns {object} if user is created successfully
- * @returns {false} if user could not be created
- * @returns {null} if parameters are missing or couldn't sync to database
+ * @returns {Promise<Object>} returns a promise of an object if successful, null if parameters are missing or didn't sync to database, false otherwise
  */
-export function createUser(email, username, password) {
+export async function createUser(
+  email,
+  username,
+  password,
+  bartender,
+  server,
+  other
+) {
   if (!email || !username || !password) return null;
 
-  return sequelize
+  return await sequelize
     .sync()
-    .then(() => {
-      return user
+    .then(async () => {
+      return await user
         .create({
           email: email,
           username: username,
           password: password,
+          bartender: bartender,
+          server: server,
+          other: other,
         })
         .then((result) => {
           return result;
