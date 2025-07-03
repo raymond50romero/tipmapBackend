@@ -15,37 +15,41 @@ router.post('/', async (req, res) => {
   if (!emailOrUser) return res.status(400).send('Email missing');
   if (!password) return res.status(400).send('Password missing');
 
-  // first check if the user input their email for the login
-  const findViaEmail = await findUserByEmail(emailOrUser);
-  let getToken;
-  if (findViaEmail) {
-    getToken = await checkPasswordAndGetToken(findViaEmail, password);
-    if (findViaEmail.email !== emailOrUser || !getToken) {
-      return res.status(403).send('Email or password was incorrect');
-    }
+  // check both email and user input to see what was the input
+  const [userByEmail, userByUsername] = await Promise.all([
+    findUserByEmail(emailOrUser),
+    findUserByUsername(emailOrUser),
+  ]);
+
+  // if no match then return invalid
+  if (!userByEmail && !userByUsername) {
+    return res.status(401).send('Invalid email/username or password');
   }
 
-  // if they didn't input their email then check if the user input their username
-  const findViaUser = await findUserByUsername(emailOrUser);
-  if (findViaUser) {
-    getToken = await checkPasswordAndGetToken(findViaUser, password);
-    if (findViaUser.username !== emailOrUser || !getToken) {
-      return res.status(403).send('Email or password was incorrect');
-    }
+  const user = userByEmail || userByUsername;
+  const matchInput = userByEmail
+    ? user.email === emailOrUser
+    : user.username === emailOrUser;
+
+  if (!matchInput) {
+    return res.status(403).send('Email or password was incorrect');
   }
 
-  // if it gets here then the user used the correct email/username and password
-  let cookieDuration = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-  res.cookie('userToken', getToken, {
+  // check password
+  const token = await checkPasswordAndGetToken(user, password);
+  if (!token) {
+    return res.status(403).send('Email or password was incorrect');
+  }
+
+  // user exist and is valid, set cookie and return status 200
+  const cookieExpires = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+  res.cookie('userToken', token, {
     httpOnly: true,
-    expires: cookieDuration,
+    expires: cookieExpires,
     sameSite: 'none',
     secure: true,
   });
-  return res.status(200).send({
-    message: `login sucessful for user ${findViaEmail.username}`,
-    token: getToken,
-  });
+  return res.status(200).send(`Login successful for user ${user.username}`);
 });
 
 /**************************
