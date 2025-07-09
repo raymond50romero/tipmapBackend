@@ -3,6 +3,10 @@ import express from 'express';
 import cors from 'cors';
 import http from 'http';
 
+// import routes
+import createAccountRouter from './routes/account/createAccount.js';
+import loginRouter from './routes/account/login.js';
+
 // add urls in the future
 const allowedOrigins = ['http://localhost:3000'];
 
@@ -40,9 +44,6 @@ app.use((req, res, next) => {
 });
 
 const httpServer = http.createServer(app);
-
-import createAccountRouter from './routes/createAccount.js';
-import loginRouter from './routes/login.js';
 
 app.use('/createAccount', createAccountRouter);
 app.use('/login', loginRouter);

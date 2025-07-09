@@ -25,10 +25,10 @@ router.post('/', async (req, res) => {
   try {
     // check if username or email exists
     if (await findUserByEmail(email)) {
-      return res.status(409).send('email exists');
+      return res.status(409).send(`${email} already exists`);
     }
     if (await findUserByUsername(username)) {
-      return res.status(409).send('username exists');
+      return res.status(409).send(`${username} already exists`);
     }
 
     // if not then hash password and save user to database
