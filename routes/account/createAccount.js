@@ -1,26 +1,26 @@
-import express from 'express';
-import bcrypt from 'bcrypt';
+import express from "express";
+import bcrypt from "bcrypt";
 
 import {
   createUser,
   findUserByEmail,
   findUserByUsername,
-} from '../database/users.database.js';
+} from "../../database/users.database.js";
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   const { email, username, password, confirmPassword, occupation, other } =
     req.body;
 
-  if (!email) return res.status(400).send('Email missing');
-  if (!username) return res.status(400).send('Username missing');
-  if (!password) return res.status(400).send('Password missing');
-  if (!confirmPassword) return res.status(400).send('Confirm password missing');
-  if (!occupation) return res.status(400).send('Occupation missing');
+  if (!email) return res.status(400).send("Email missing");
+  if (!username) return res.status(400).send("Username missing");
+  if (!password) return res.status(400).send("Password missing");
+  if (!confirmPassword) return res.status(400).send("Confirm password missing");
+  if (!occupation) return res.status(400).send("Occupation missing");
 
   if (password !== confirmPassword)
-    return res.status(406).send('Passwords do not match');
+    return res.status(406).send("Passwords do not match");
 
   try {
     // check if username or email exists
@@ -42,16 +42,16 @@ router.post('/', async (req, res) => {
       hashedPassword,
       occList.bartender,
       occList.server,
-      other
+      other,
     );
 
     if (newUser) {
-      return res.status(201).send('user created');
+      return res.status(201).send("user created");
     } else
-      return res.status(500).send('Server error, could not create new user');
+      return res.status(500).send("Server error, could not create new user");
   } catch (error) {
-    console.log('could not make new user \n', error);
-    return res.status(500).send('Server error, could not make new user');
+    console.log("could not make new user \n", error);
+    return res.status(500).send("Server error, could not make new user");
   }
 });
 
@@ -68,10 +68,10 @@ function getOccupationsList(occupations) {
 
   for (let i in occupations) {
     switch (occupations[i]) {
-      case 'bartender':
+      case "bartender":
         occObj.bartender = true;
         break;
-      case 'server':
+      case "server":
         occObj.server = true;
         break;
       default:

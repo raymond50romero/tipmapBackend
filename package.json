@@ -1,7 +1,7 @@
 {
-  "name": "server",
+  "name": "Server",
   "version": "1.0.0",
-  "description": "server tips backend",
+  "description": "fohtips backend",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,5 +20,6 @@
     "mysql2": "^3.14.1",
     "path-to-regexp": "^8.2.0",
     "sequelize": "^6.37.7"
-  }
+  },
+  "type": "module"
 }
