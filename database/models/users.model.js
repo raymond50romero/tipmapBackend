@@ -1,8 +1,8 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from './connect.js';
+import { DataTypes } from "sequelize";
+import { sequelize } from "./connect.js";
 
 export const user = sequelize.define(
-  'users',
+  "users",
   {
     user_id: {
       type: DataTypes.INTEGER,
@@ -40,9 +40,10 @@ export const user = sequelize.define(
     },
   },
   {
+    timestamps: true,
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'users',
-  }
+    tableName: "users",
+  },
 );
