@@ -1,5 +1,5 @@
-import { sequelize } from './models/connect.js';
-import { user } from './models/users.model.js';
+import { sequelize } from "./models/connect.js";
+import { user } from "./models/users.model.js";
 
 /**
  * save created user to database
@@ -16,7 +16,7 @@ export async function createUser(
   password,
   bartender,
   server,
-  other
+  other,
 ) {
   if (!email || !username || !password) return null;
 
@@ -36,13 +36,13 @@ export async function createUser(
           return result;
         })
         .catch((error) => {
-          console.log('\n could not create new user \n');
+          console.log("\n could not create new user \n");
           console.log(error);
           return false;
         });
     })
     .catch((error) => {
-      console.log('\n could not sync with database \n');
+      console.log("\n could not sync with database \n");
       console.log(error);
       return null;
     });
@@ -76,8 +76,8 @@ export async function findUserByEmail(email) {
     })
     .catch((error) => {
       console.log(
-        'trouble syncing with database when looking for email',
-        error
+        "trouble syncing with database when looking for email",
+        error,
       );
       return null;
     });
@@ -105,15 +105,50 @@ export async function findUserByUsername(username) {
           } else return false;
         })
         .catch((error) => {
-          console.log('error while finding user by username', error);
+          console.log("error while finding user by username", error);
           return false;
         });
     })
     .catch((error) => {
       console.log(
-        'trouble syncing with database when looking for username',
-        error
+        "trouble syncing with database when looking for username",
+        error,
       );
+      return null;
+    });
+}
+
+/**
+ * find user by user id
+ *
+ * @param {number} userId
+ *
+ * @returns {Promise<Object>} returns user if found, false otherwise. Null if no userid given or could not sync to database
+ */
+export async function getUserById(userId) {
+  if (!userId) return null;
+
+  return await sequelize
+    .sync()
+    .then(async () => {
+      return await user
+        .findOne({ where: { user_id: `${userId}` } })
+        .then((res) => {
+          if (res) {
+            console.log("found user by id");
+            return res;
+          } else {
+            console.log("unable to find user by user id");
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.log("unable to find user by id: ", error);
+          return false;
+        });
+    })
+    .catch((error) => {
+      console.log("unable to sync to database", error);
       return null;
     });
 }

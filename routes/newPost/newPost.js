@@ -1,8 +1,10 @@
 import express from "express";
 
+import authorizeUser from "../../middleware/authorizeUser.js";
+
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", authorizeUser, async (req, res) => {
   const {
     name,
     address,
@@ -14,7 +16,6 @@ router.post("/", async (req, res) => {
     title,
     comment,
   } = req.body;
-  console.log("this is request: \n", req.cookies);
 
   if (!name) res.status(400).send("Restaurant name missing");
   if (!address) res.status(400).send("Restaurant address missing");
