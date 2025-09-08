@@ -14,6 +14,7 @@ router.post("/", async (req, res) => {
     title,
     comment,
   } = req.body;
+  console.log("this is request: \n", req.cookies);
 
   if (!name) res.status(400).send("Restaurant name missing");
   if (!address) res.status(400).send("Restaurant address missing");
@@ -24,3 +25,5 @@ router.post("/", async (req, res) => {
   if (!management) res.status(400).send("Management rating missing");
   if (!clientele) res.status(400).send("Clientele rating missing");
 });
+
+export default router;
