@@ -1,6 +1,7 @@
 import express from "express";
 
 import authorizeUser from "../../middleware/authorizeUser.js";
+import { createNewPost } from "../../database/posts.database.js";
 
 const router = express.Router();
 
@@ -17,9 +18,7 @@ router.post("/", authorizeUser, async (req, res) => {
     comment,
   } = req.body;
 
-  console.log("inside new post router");
   const user = req.user;
-  console.log("this is user in new post: ", user);
 
   if (!name) res.status(400).send("Restaurant name missing");
   if (!address) res.status(400).send("Restaurant address missing");
@@ -29,6 +28,19 @@ router.post("/", authorizeUser, async (req, res) => {
   if (!workenv) res.status(400).send("Work environment rating missing");
   if (!management) res.status(400).send("Management rating missing");
   if (!clientele) res.status(400).send("Clientele rating missing");
+
+  const newPost = await createNewPost(
+    user.user_id,
+    name,
+    address,
+    weekdayTips,
+    weekendTips,
+    workenv,
+    management,
+    clientele,
+    title,
+    comment,
+  );
 });
 
 export default router;

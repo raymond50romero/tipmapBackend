@@ -1,6 +1,20 @@
 import { sequelize } from "./models/connect.js";
 import { posts } from "./models/posts.model.js";
 
+/**
+ *
+ * @param {number} userId
+ * @param {string} name
+ * @param {string} address
+ * @param {number} weekdayTips
+ * @param {number} weekendTips
+ * @param {number} workenv
+ * @param {number} management
+ * @param {number} clientele
+ * @param {string} title
+ * @param {string} comment
+ * @returns {Promise<object>} returns newly created post object, false otherwise
+ */
 export async function createNewPost(
   userId,
   name,
@@ -23,6 +37,7 @@ export async function createNewPost(
     !management ||
     !clientele
   ) {
+    console.log("missing parameters when creating new post");
     return false;
   }
 
