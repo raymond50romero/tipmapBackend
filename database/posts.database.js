@@ -48,6 +48,7 @@ export async function createNewPost(
         .create({
           user_id_link: userId,
           restaurant_name: name,
+          restaurant_address: address,
           weekday_tips: weekdayTips,
           weekend_tips: weekendTips,
           work_environment: workenv,

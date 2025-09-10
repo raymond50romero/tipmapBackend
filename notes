@@ -1,0 +1,4 @@
+when creating a new post, i need to add a way so that multiple posts concerning the same restaurant can be linked together. 
+I am thinking create a new table that does it and whenever someone puts in an address, a new row is made in this table that 
+contains the address as well as a unique identifier and how many links to that restaurant we currently have. also add the 
+link to the table to the restaurant post so that if we are looking through posts we know what is the unique identifier 
