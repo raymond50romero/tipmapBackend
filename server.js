@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import http from "http";
+import cookieParser from "cookie-parser";
 
 // import routes
 import createAccountRouter from "./routes/account/createAccount.js";
@@ -26,6 +27,7 @@ const PORT = process.env.PORT || 4000;
 const SERVER = process.env.SERVER || "fohtips";
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));

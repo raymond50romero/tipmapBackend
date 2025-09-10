@@ -17,6 +17,10 @@ router.post("/", authorizeUser, async (req, res) => {
     comment,
   } = req.body;
 
+  console.log("inside new post router");
+  const user = req.user;
+  console.log("this is user in new post: ", user);
+
   if (!name) res.status(400).send("Restaurant name missing");
   if (!address) res.status(400).send("Restaurant address missing");
   if (!weekdayTips) res.status(400).send("Average weekday tips missing");

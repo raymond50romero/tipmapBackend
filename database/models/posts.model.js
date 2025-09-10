@@ -34,7 +34,7 @@ export const posts = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    work_env: {
+    work_environment: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
