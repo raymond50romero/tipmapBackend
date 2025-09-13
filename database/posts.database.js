@@ -75,3 +75,34 @@ export async function createNewPost(
       console.log("error on sync with new post database ", error);
     });
 }
+
+/**
+ * get all the posts in the database
+ *
+ * @returns {Promise<object>} object that contains all of the posts in the database
+ */
+export async function getPosts() {
+  return await sequelize
+    .sync()
+    .then(async () => {
+      return await posts
+        .findAll()
+        .then((res) => {
+          if (res) {
+            console.log("found all posts: ", res);
+            return res;
+          } else {
+            console.log("res is null getting posts");
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return false;
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+}

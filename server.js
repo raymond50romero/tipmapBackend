@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 // import routes
 import createAccountRouter from "./routes/account/createAccount.js";
 import loginRouter from "./routes/account/login.js";
-import newPostRouter from "./routes/newPost/newPost.js";
+import postsRouter from "./routes/posts/posts.js";
 
 // add urls in the future
 const allowedOrigins = ["http://localhost:3000"];
@@ -50,7 +50,7 @@ const httpServer = http.createServer(app);
 
 app.use("/createAccount", createAccountRouter);
 app.use("/login", loginRouter);
-app.use("/newPost", newPostRouter);
+app.use("/posts", postsRouter);
 
 httpServer.listen(PORT, () => {
   console.log(`server ${SERVER} is running on port ${PORT}`);

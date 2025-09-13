@@ -1,11 +1,11 @@
 import express from "express";
 
 import authorizeUser from "../../middleware/authorizeUser.js";
-import { createNewPost } from "../../database/posts.database.js";
+import { createNewPost, getPosts } from "../../database/posts.database.js";
 
 const router = express.Router();
 
-router.post("/", authorizeUser, async (req, res) => {
+router.post("/newPost", authorizeUser, async (req, res) => {
   const {
     name,
     address,
@@ -51,6 +51,17 @@ router.post("/", authorizeUser, async (req, res) => {
   } catch (error) {
     console.log("could not make new post \n", error);
     return res.status(500).send("Server error, could not create new post");
+  }
+});
+
+router.get("/getPosts", async (req, res) => {
+  try {
+    const allPosts = await getPosts();
+    delete allPosts.post_id;
+    delete allPosts.user_id_link;
+    return res.status(200).send(allPosts);
+  } catch (error) {
+    return res.status(500).send("Server error");
   }
 });
 
