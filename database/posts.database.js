@@ -19,6 +19,7 @@ export async function createNewPost(
   userId,
   name,
   address,
+  coordinates,
   weekdayTips,
   weekendTips,
   workenv,
@@ -31,6 +32,7 @@ export async function createNewPost(
     !userId ||
     !name ||
     !address ||
+    !coordinates ||
     !weekdayTips ||
     !weekendTips ||
     !workenv ||
@@ -49,6 +51,7 @@ export async function createNewPost(
           user_id_link: userId,
           restaurant_name: name,
           restaurant_address: address,
+          coordinates: coordinates,
           weekday_tips: weekdayTips,
           weekend_tips: weekendTips,
           work_environment: workenv,

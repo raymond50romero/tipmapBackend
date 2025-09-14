@@ -26,6 +26,10 @@ export const posts = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    coordinates: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+    },
     weekday_tips: {
       type: DataTypes.INTEGER,
       allowNull: false,
