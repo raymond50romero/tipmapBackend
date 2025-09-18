@@ -26,9 +26,23 @@ export const posts = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    coordinates: {
-      type: DataTypes.DOUBLE,
+    restaurant_city: {
+      type: DataTypes.STRING,
       allowNull: false,
+    },
+    restaurant_state: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    longitude: {
+      type: DataTypes.DECIMAL(9, 6),
+      allowNull: false,
+      validate: { min: -180, max: 180 },
+    },
+    latitude: {
+      type: DataTypes.DECIMAL(8, 6),
+      allowNull: false,
+      validate: { min: -90, max: 90 },
     },
     weekday_tips: {
       type: DataTypes.INTEGER,

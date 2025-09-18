@@ -6,6 +6,10 @@ import { posts } from "./models/posts.model.js";
  * @param {number} userId
  * @param {string} name
  * @param {string} address
+ * @param {string} city,
+ * @param {string} state,
+ * @param {number} longitude
+ * @param {number} latitude
  * @param {number} weekdayTips
  * @param {number} weekendTips
  * @param {number} workenv
@@ -19,7 +23,10 @@ export async function createNewPost(
   userId,
   name,
   address,
-  coordinates,
+  city,
+  state,
+  longitude,
+  latitude,
   weekdayTips,
   weekendTips,
   workenv,
@@ -32,7 +39,10 @@ export async function createNewPost(
     !userId ||
     !name ||
     !address ||
-    !coordinates ||
+    !city ||
+    !state ||
+    !longitude ||
+    !latitude ||
     !weekdayTips ||
     !weekendTips ||
     !workenv ||
@@ -51,7 +61,10 @@ export async function createNewPost(
           user_id_link: userId,
           restaurant_name: name,
           restaurant_address: address,
-          coordinates: coordinates,
+          restaurant_city: city,
+          restaurant_state: state,
+          longitude: longitude,
+          latitude: latitude,
           weekday_tips: weekdayTips,
           weekend_tips: weekendTips,
           work_environment: workenv,
