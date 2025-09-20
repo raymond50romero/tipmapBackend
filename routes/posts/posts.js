@@ -4,6 +4,7 @@ import axios from "axios";
 
 import authorizeUser from "../../middleware/authorizeUser.js";
 import { getIpInfo } from "../../utils/getIpInfo.js";
+import { getLongLat } from "../../utils/geoCoding.js";
 import { createNewPost, getPosts } from "../../database/posts.database.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
@@ -75,33 +76,18 @@ router.post("/newPost", authorizeUser, async (req, res) => {
       const latEncoded = encodeURIComponent(latitude);
       url += `&proximity=${longEncoded},${latEncoded}`;
     }
-    url += `&access_token=${mapboxToken}`;
 
-    const geocodingResult = await axios
-      .get(url)
-      .then((res) => {
-        if (res) {
-          console.log("this is geocoding result: ", res);
-          return res;
-        } else {
-          console.log("geocoding result returned false");
-          return false;
-        }
-      })
-      .catch((error) => {
-        console.log("geocoding ran into error: ", error);
-        return false;
-      });
-
+    const longLat = await getLongLat(url);
     let longitude;
     let latitude;
-    if (geocodingResult) {
-      longitude =
-        geocodingResult.data.features[0].properties.coordinates.longitude;
-      latitude =
-        geocodingResult.data.features[0].properties.coordinates.latitude;
+    if (longLat) {
+      longitude = longLat[0];
+      latitude = longLat[1];
     } else {
-      throw new Error("geocoding did not return any results");
+      console.log("unable to get longitude and latitude");
+      return res
+        .status(500)
+        .send("Server fault, unable to get restaurant accurate address");
     }
 
     const newPost = await createNewPost(

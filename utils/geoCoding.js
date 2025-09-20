@@ -24,12 +24,10 @@ export async function geocodingResults(url) {
     });
 }
 
-export async function getLongitude(url) {
+export async function getLongLat(url) {
   const geocode = await geocodingResults(url);
-  return geocode.data.features[0].properties.coordinates.longitude;
-}
-
-export async function getLatitude(url) {
-  const geocode = await geocodingResults(url);
-  return geocode.data.features[0].properties.coordinates.latitude;
+  return [
+    geocode.data.features[0].properties.coordinates.longitude,
+    geocode.data.features[0].properties.coordinates.latitude,
+  ];
 }
