@@ -32,16 +32,13 @@ router.post("/newPost", authorizeUser, async (req, res) => {
   } = req.body;
 
   const user = req.user;
-  const longitude = userLongLat[0] ? userLongLat[0] : null;
-  const latitude = userLongLat[1] ? userLongLat[1] : null;
+  const userLongitude = userLongLat[0] ? userLongLat[0] : null;
+  const userLatitude = userLongLat[1] ? userLongLat[1] : null;
 
   if (!name) return res.status(400).send("Restaurant name missing");
   if (!address) return res.status(400).send("Restaurant address missing");
   if (!city) return res.status(400).send("Restaurant city missing");
   if (!state) return res.status(400).send("Restaurant state missing");
-  if (!longitude)
-    return res.status(400).send("Missing coordinates (longitude)");
-  if (!latitude) return res.status(400).send("Missing coordinates (latitude)");
   if (!weekdayTips) return res.status(400).send("Average weekday tips missing");
   if (!weekendTips) return res.status(400).send("Average weekend tips missing");
   if (!weekendTips) return res.status(400).send("Average weekend tips missing");
@@ -50,7 +47,6 @@ router.post("/newPost", authorizeUser, async (req, res) => {
   if (!clientele) return res.status(400).send("Clientele rating missing");
 
   try {
-    // convert address into coordinates
     if (!mapboxToken) {
       throw new Error("Missing mapbox token");
     }
@@ -73,14 +69,40 @@ router.post("/newPost", authorizeUser, async (req, res) => {
     const encoded = encodeURIComponent(
       address.trim() + city.trim() + state.trim(),
     );
-    //let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encoded}.json?access_token=${mapboxToken}&limit=1`;
     let url = `https://api.mapbox.com/search/geocode/v6/forward?q=${encoded}`;
     if (proximity) {
       const longEncoded = encodeURIComponent(longitude);
       const latEncoded = encodeURIComponent(latitude);
       url += `&proximity=${longEncoded},${latEncoded}`;
     }
-    url += `access_token=${mapboxToken}`;
+    url += `&access_token=${mapboxToken}`;
+
+    const geocodingResult = await axios
+      .get(url)
+      .then((res) => {
+        if (res) {
+          console.log("this is geocoding result: ", res);
+          return res;
+        } else {
+          console.log("geocoding result returned false");
+          return false;
+        }
+      })
+      .catch((error) => {
+        console.log("geocoding ran into error: ", error);
+        return false;
+      });
+
+    let longitude;
+    let latitude;
+    if (geocodingResult) {
+      longitude =
+        geocodingResult.data.features[0].properties.coordinates.longitude;
+      latitude =
+        geocodingResult.data.features[0].properties.coordinates.latitude;
+    } else {
+      throw new Error("geocoding did not return any results");
+    }
 
     const newPost = await createNewPost(
       user.user_id,
