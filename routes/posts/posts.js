@@ -1,5 +1,4 @@
 import express from "express";
-import LRUCache from "lru-cache";
 import axios from "axios";
 
 import authorizeUser from "../../middleware/authorizeUser.js";
@@ -10,11 +9,6 @@ import { createNewPost, getPosts } from "../../database/posts.database.js";
 const mapboxToken = process.env.MAP_TOKEN;
 
 const router = express.Router();
-
-const cache = new LRUCache({
-  max: 500,
-  ttl: 1000 * 60 * 10,
-});
 
 router.post("/newPost", authorizeUser, async (req, res) => {
   const {
@@ -53,17 +47,12 @@ router.post("/newPost", authorizeUser, async (req, res) => {
     }
 
     // potentially looking at ways to verify the user is from the united states, idk if that will be possible
-    const userIpInfo = getIpInfo(req.ip);
-    console.log("this is userIpInfo", userIpInfo);
-    const userCountry = userIpInfo.country_code;
-
-    if (userCountry !== "US") {
-      return res.status(403).send("Ip is not from the United States");
-    }
+    //const userIpInfo = await getIpInfo(req.ip);
+    //const userCountry = userIpInfo.country_code;
 
     let proximity = null;
-    if (longitude && latitude) proximity = [longitude, latitude];
-    const key = JSON.stringify({ address, userCountry, proximity });
+    console.log("this is userLongLat: ", userLongLat);
+    if (userLongLat) proximity = [userLongLat[0], userLongLat[1]];
 
     // TODO check if the cache holds what I need, for now just go on
 
@@ -72,12 +61,13 @@ router.post("/newPost", authorizeUser, async (req, res) => {
     );
     let url = `https://api.mapbox.com/search/geocode/v6/forward?q=${encoded}`;
     if (proximity) {
-      const longEncoded = encodeURIComponent(longitude);
-      const latEncoded = encodeURIComponent(latitude);
+      const longEncoded = encodeURIComponent(proximity[0]);
+      const latEncoded = encodeURIComponent(proximity[1]);
       url += `&proximity=${longEncoded},${latEncoded}`;
     }
 
     const longLat = await getLongLat(url);
+    console.log("this is restaurant longLat: ", longLat);
     let longitude;
     let latitude;
     if (longLat) {
