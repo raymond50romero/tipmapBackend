@@ -5,8 +5,8 @@ import http from "http";
 import cookieParser from "cookie-parser";
 
 // import routes
-import createAccountRouter from "./routes/account/createAccount.js";
-import loginRouter from "./routes/account/login.js";
+import createAccountRouter from "./routes/auth/createAccount.js";
+import loginRouter from "./routes/auth/login.js";
 import postsRouter from "./routes/posts/posts.js";
 
 // add urls in the future

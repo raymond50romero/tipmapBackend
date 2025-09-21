@@ -27,8 +27,7 @@ router.post("/newPost", authorizeUser, async (req, res) => {
   } = req.body;
 
   const user = req.user;
-  const userLongitude = userLongLat[0] ? userLongLat[0] : null;
-  const userLatitude = userLongLat[1] ? userLongLat[1] : null;
+  if (!user) return res.status(400).send("no user found");
 
   if (!name) return res.status(400).send("Restaurant name missing");
   if (!address) return res.status(400).send("Restaurant address missing");
@@ -42,17 +41,11 @@ router.post("/newPost", authorizeUser, async (req, res) => {
   if (!clientele) return res.status(400).send("Clientele rating missing");
 
   try {
-    if (!mapboxToken) {
-      throw new Error("Missing mapbox token");
-    }
+    if (!mapboxToken) throw new Error("Missing mapbox token");
 
     // potentially looking at ways to verify the user is from the united states, idk if that will be possible
     //const userIpInfo = await getIpInfo(req.ip);
     //const userCountry = userIpInfo.country_code;
-
-    let proximity = null;
-    console.log("this is userLongLat: ", userLongLat);
-    if (userLongLat) proximity = [userLongLat[0], userLongLat[1]];
 
     // TODO check if the cache holds what I need, for now just go on
 
@@ -60,20 +53,15 @@ router.post("/newPost", authorizeUser, async (req, res) => {
       address.trim() + city.trim() + state.trim(),
     );
     let url = `https://api.mapbox.com/search/geocode/v6/forward?q=${encoded}`;
-    if (proximity) {
-      const longEncoded = encodeURIComponent(proximity[0]);
-      const latEncoded = encodeURIComponent(proximity[1]);
+    if (userLongLat) {
+      const longEncoded = encodeURIComponent(userLongLat[0]);
+      const latEncoded = encodeURIComponent(userLongLat[1]);
       url += `&proximity=${longEncoded},${latEncoded}`;
     }
 
-    const longLat = await getLongLat(url);
+    const restaurantLongLat = await getLongLat(url);
     console.log("this is restaurant longLat: ", longLat);
-    let longitude;
-    let latitude;
-    if (longLat) {
-      longitude = longLat[0];
-      latitude = longLat[1];
-    } else {
+    if (!restaurantLongLat) {
       console.log("unable to get longitude and latitude");
       return res
         .status(500)
@@ -86,8 +74,8 @@ router.post("/newPost", authorizeUser, async (req, res) => {
       address,
       city,
       state,
-      longitude,
-      latitude,
+      restaurantLongLat[0],
+      restaurantLongLat[1],
       weekdayTips,
       weekendTips,
       workenv,
@@ -108,15 +96,8 @@ router.post("/newPost", authorizeUser, async (req, res) => {
   }
 });
 
-router.get("/getPosts", async (req, res) => {
-  try {
-    const allPosts = await getPosts();
-    delete allPosts.post_id;
-    delete allPosts.user_id_link;
-    return res.status(200).send(allPosts);
-  } catch (error) {
-    return res.status(500).send("Server error");
-  }
+router.get("/getPosts", (req, res) => {
+  console.log("this is req.query: ", req.query);
 });
 
 export default router;
