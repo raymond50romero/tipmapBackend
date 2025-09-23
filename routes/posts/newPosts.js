@@ -1,10 +1,9 @@
 import express from "express";
-import axios from "axios";
 
 import authorizeUser from "../../middleware/authorizeUser.js";
 import { getIpInfo } from "../../utils/getIpInfo.js";
 import { getLongLat } from "../../utils/geoCoding.js";
-import { createNewPost, getPosts } from "../../database/posts.database.js";
+import { createNewPost } from "../../database/posts.database.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
 
@@ -94,10 +93,6 @@ router.post("/newPost", authorizeUser, async (req, res) => {
     console.log("could not make new post \n", error);
     return res.status(500).send("Server error, could not create new post");
   }
-});
-
-router.get("/getPosts", (req, res) => {
-  console.log("this is req.query: ", req.query);
 });
 
 export default router;

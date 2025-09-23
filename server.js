@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 // import routes
 import createAccountRouter from "./routes/auth/createAccount.js";
 import loginRouter from "./routes/auth/login.js";
-import postsRouter from "./routes/posts/posts.js";
+import newPostsRouter from "./routes/posts/newPosts.js";
 
 // add urls in the future
 const allowedOrigins = ["http://localhost:3000"];
