@@ -9,7 +9,7 @@ const mapboxToken = process.env.MAP_TOKEN;
 
 const router = express.Router();
 
-router.post("/newPost", authorizeUser, async (req, res) => {
+router.post("/", authorizeUser, async (req, res) => {
   const {
     name,
     address,
