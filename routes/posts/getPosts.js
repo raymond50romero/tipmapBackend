@@ -18,10 +18,11 @@ function toNumber(value) {
   return Number.isFinite(parsed) ? parsed : NaN;
 }
 
+function toRadians(deg) {
+  return (deg * Math.PI) / 180;
+}
+
 function haversineDistance(lat1, long1, lat2, long2) {
-  function toRadians(deg) {
-    return (deg * Math.PI) / 180;
-  }
   const dLat = toRadians(lat2 - lat1);
   const dLong = toRadians(long2 - long1);
   const lat1Rad = toRadians(lat1);
@@ -87,5 +88,71 @@ router.get("/", async (req, res) => {
     const rawLongSpan = Math.abs(parsedNorthEastLong - parsedSouthWestLong);
     const longSpan = crossesAntimeridian ? 360 - rawLongSpan : rawLongSpan;
     const zoomModifier = parsedZoom > 0 ? parsedZoom : 1;
-  } catch (error) {}
+
+    const latThreshold = Math.max(
+      latSpan * BOUNDS_THRESHOLD_RATIO,
+      MIN_LAT_THRESHOLD_DEGREES / zoomModifier,
+    );
+    const longThreshold = Math.max(
+      longSpan * BOUNDS_THRESHOLD_RATIO,
+      MIN_LONG_THRESHOLD_DEGREES / zoomModifier,
+    );
+
+    const minLat = clamp(
+      Math.min(parsedNorthEastLat, parsedSouthWestLat) - latThreshold,
+      -90,
+      90,
+    );
+    const maxLat = clamp(
+      Math.max(parsedNorthEastLat, parsedSouthWestLat) + latThreshold,
+      -90,
+      90,
+    );
+
+    const minLong = clamp(parsedSouthWestLong - longThreshold, -180, 180);
+    const maxLong = clamp(parsedNorthEastLong + longThreshold, -180, 180);
+
+    const posts = await getPostsInBounds({
+      minLat,
+      maxLat,
+      minLong,
+      maxLong,
+      crossesAntimeridian,
+    });
+
+    if (!posts) {
+      return res
+        .status(500)
+        .send("Server error, unable to retrieve posts for bounds");
+    }
+
+    const postsWithDistance = posts.map((post) => {
+      const postData = post.get({ plain: true });
+      const postLong = toNumber(postData.longitude);
+      const postLat = toNumber(postData.latitude);
+      const distance =
+        Number.isNaN(postLong) || Number.isNaN(postLat)
+          ? null
+          : haversineDistance(parsedUserLat, parsedUserLong, postLat, postLong);
+
+      return {
+        ...postData,
+        distance,
+      };
+    });
+
+    postsWithDistance.sort((a, b) => {
+      if (a.distance === null && b.distance === null) return 0;
+      if (a.distance === null) return 1;
+      if (b.distance === null) return -1;
+      return a.distance - b.distance;
+    });
+
+    return res.status(200).json(postsWithDistance);
+  } catch (error) {
+    console.log("error getting posts:", error);
+    return res.status(500).send("Server error retrieving posts");
+  }
 });
+
+export default router;
