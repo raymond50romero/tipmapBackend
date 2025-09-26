@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+
 import { sequelize } from "./models/connect.js";
 import { posts } from "./models/posts.model.js";
 
@@ -17,7 +19,7 @@ import { posts } from "./models/posts.model.js";
  * @param {number} clientele
  * @param {string} title
  * @param {string} comment
- * @returns {Promise<object>} returns newly created post object, false otherwise
+ * @returns {Promise<object[]|boolean>} returns newly created post object, false otherwise
  */
 export async function createNewPost(
   userId,
@@ -95,7 +97,7 @@ export async function createNewPost(
 /**
  * get all the posts in the database
  *
- * @returns {Promise<object>} object that contains all of the posts in the database
+ * @returns {Promise<object[]|boolean>} object that contains all of the posts in the database, false otherwise
  */
 export async function getPosts() {
   return await sequelize
@@ -109,6 +111,76 @@ export async function getPosts() {
             return res;
           } else {
             console.log("res is null getting posts");
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return false;
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+}
+
+/**
+ * Fetch posts constrained to a latitude/longitude bounding box.
+ *
+ * @param {object} bounds
+ * @param {number} bounds.minLat
+ * @param {number} bounds.maxLat
+ * @param {number} bounds.minLong
+ * @param {number} bounds.maxLong
+ * @param {boolean} bounds.crossesAntimeridian
+ * @returns {Promise<object[]|boolean>} posts that fall inside the bounds, false otherwise
+ */
+export async function getPostsInBounds(bounds) {
+  const { minLat, maxLat, minLong, maxLong, crossesAntimeridian } =
+    bounds || {};
+
+  if (
+    typeof minLat !== "number" ||
+    typeof maxLat !== "number" ||
+    typeof minLong !== "number" ||
+    typeof maxLong !== "number"
+  ) {
+    console.log("missing or invalid bounds while querying posts");
+    return false;
+  }
+
+  const latitudeRange = {
+    [Op.between]: [Math.max(-90, minLat), Math.min(90, maxLat)],
+  };
+
+  const safeMinLong = Math.max(-180, minLong);
+  const safeMaxLong = Math.min(180, maxLong);
+
+  const whereClause = crossesAntimeridian
+    ? {
+        latitude: latitudeRange,
+        [Op.or]: [
+          { longitude: { [Op.between]: [-180, safeMaxLong] } },
+          { longitude: { [Op.between]: [safeMinLong, 180] } },
+        ],
+      }
+    : {
+        latitude: latitudeRange,
+        longitude: { [Op.between]: [safeMinLong, safeMaxLong] },
+      };
+
+  return await sequelize
+    .sync()
+    .then(async () => {
+      return await posts
+        .findAll({ where: whereClause })
+        .then((res) => {
+          if (res) {
+            console.log("found posts within bounds: ", res.length);
+            return res;
+          } else {
+            console.log("res is null getting posts within bounds");
             return false;
           }
         })
