@@ -58,4 +58,34 @@ router.get("/", async (req, res) => {
     !southWestLat
   )
     return res.status(400).send("unable to get necessary location identifiers");
+
+  try {
+    const parsedUserLong = toNumber(userLong);
+    const parsedUserLat = toNumber(userLat);
+    const parsedZoom = toNumber(zoom);
+    const parsedNorthEastLong = toNumber(northEastLong);
+    const parsedNorthEastLat = toNumber(northEastLat);
+    const parsedSouthWestLong = toNumber(southWestLong);
+    const parsedSouthWestLat = toNumber(southWestLat);
+
+    if (
+      Number.isNaN(parsedUserLong) ||
+      Number.isNaN(parsedUserLat) ||
+      Number.isNaN(parsedZoom) ||
+      Number.isNaN(parsedNorthEastLong) ||
+      Number.isNaN(parsedNorthEastLat) ||
+      Number.isNaN(parsedSouthWestLong) ||
+      Number.isNaN(parsedSouthWestLat)
+    ) {
+      return res
+        .status(400)
+        .send("unable to parse location parameters from request");
+    }
+
+    const latSpan = Math.abs(parsedNorthEastLat - parsedSouthWestLat);
+    const crossesAntimeridian = parsedSouthWestLong > parsedNorthEastLong;
+    const rawLongSpan = Math.abs(parsedNorthEastLong - parsedSouthWestLong);
+    const longSpan = crossesAntimeridian ? 360 - rawLongSpan : rawLongSpan;
+    const zoomModifier = parsedZoom > 0 ? parsedZoom : 1;
+  } catch (error) {}
 });
