@@ -101,6 +101,12 @@ router.get("/", async (req, res) => {
         .send("Server error, unable to retrieve posts for bounds");
     }
 
+    delete posts.createdAt;
+    delete posts.deletedAt;
+    delete posts.post_id;
+    delete posts.updatedAt;
+    delete posts.user_id_link;
+
     const postsWithDistance = posts.map((post) => {
       const postData = post.get({ plain: true });
       const postLong = toNumber(postData.longitude);
