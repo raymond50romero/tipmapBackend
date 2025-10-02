@@ -59,7 +59,7 @@ router.post("/", authorizeUser, async (req, res) => {
     }
 
     const restaurantLongLat = await getLongLat(url);
-    console.log("this is restaurant longLat: ", longLat);
+    console.log("this is restaurant longLat: ", restaurantLongLat);
     if (!restaurantLongLat) {
       console.log("unable to get longitude and latitude");
       return res
