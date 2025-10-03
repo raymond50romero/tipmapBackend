@@ -1,38 +1,14 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "./connect.js";
 
-export const posts = sequelize.define(
-  "posts",
+export const weights = sequelize.define(
+  "weights",
   {
-    post_id: {
+    weight_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-    },
-    user_id_link: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "users",
-        key: "user_id",
-      },
-    },
-    restaurant_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    restaurant_address: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    restaurant_city: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    restaurant_state: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     longitude: {
       type: DataTypes.DECIMAL(9, 6),
@@ -44,33 +20,25 @@ export const posts = sequelize.define(
       allowNull: false,
       validate: { min: -90, max: 90 },
     },
-    weekday_tips: {
+    weekday_tips_weight: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    weekend_tips: {
+    weekend_tips_weight: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    work_environment: {
+    work_environment_weight: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    management: {
+    management_weight: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    clientele: {
+    clientele_weight: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    comment: {
-      type: DataTypes.TEXT("medium"),
-      allowNull: true,
     },
   },
   {
@@ -78,6 +46,6 @@ export const posts = sequelize.define(
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: "posts",
+    tableName: "weights",
   },
 );
