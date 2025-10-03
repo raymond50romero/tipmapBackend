@@ -18,6 +18,14 @@ export const posts = sequelize.define(
         key: "user_id",
       },
     },
+    weight_id_link: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "weights",
+        key: "weight_id",
+      },
+    },
     restaurant_name: {
       type: DataTypes.STRING,
       allowNull: false,
