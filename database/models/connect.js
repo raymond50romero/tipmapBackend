@@ -9,9 +9,13 @@ const databasePassword = process.env.DATABASE_PASSWORD;
 export const sequelize = new Sequelize({
   dialect: "mariadb",
   database: databaseName,
-  user: databaseUsername,
+  username: databaseUsername,
   password: databasePassword,
   host: databaseHost,
+  dialectOptions: {
+    allowPublicKeyRetrieval: true, // <-- fix
+    multipleStatements: true, // optional, only if you need it
+  },
 });
 
 sequelize
