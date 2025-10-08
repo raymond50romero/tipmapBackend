@@ -1,10 +1,10 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "./connect.js";
 
-export const weights = sequelize.define(
-  "weights",
+export const avgPosts = sequelize.define(
+  "average_posts",
   {
-    weight_id: {
+    average_post_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
@@ -20,23 +20,23 @@ export const weights = sequelize.define(
       allowNull: false,
       validate: { min: -90, max: 90 },
     },
-    weekday_tips_weight: {
+    weekday_tips_average: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    weekend_tips_weight: {
+    weekend_tips_average: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    work_environment_weight: {
+    work_environment_average: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    management_weight: {
+    management_average: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    clientele_weight: {
+    clientele_average: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -46,6 +46,6 @@ export const weights = sequelize.define(
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: "weights",
+    tableName: "average_posts",
   },
 );
