@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 
 import { sequelize } from "./models/connect.js";
 import { posts } from "./models/posts.model.js";
+import { avgPosts } from "./models/avgPosts.model.js";
 
 /**
  *
@@ -191,6 +192,93 @@ export async function getPostsInBounds(bounds) {
     })
     .catch((error) => {
       console.log(error);
+      return false;
+    });
+}
+
+export async function createAvgPost(
+  longitude,
+  latitude,
+  weekdayTips,
+  weekendTips,
+  workEnv,
+  management,
+  clientele,
+) {
+  if (
+    !longitude ||
+    !latitude ||
+    !weekdayTips ||
+    !weekendTips ||
+    !workEnv ||
+    !management ||
+    !clientele
+  )
+    return false;
+
+  return await sequelize
+    .sync()
+    .then(() => {
+      avgPosts
+        .create({
+          longitude: longitude,
+          latitude: latitude,
+          weekday_tips_average: weekdayTips,
+          weekend_tips_average: weekendTips,
+          work_environment_average: workEnv,
+          management_average: management,
+          clientele_average: clientele,
+        })
+        .then((res) => {
+          if (res) {
+            console.log("new average posts created successfully");
+            return res;
+          } else {
+            console.log("unable to create new average post");
+          }
+        })
+        .catch((error) => {
+          console.log("error when trying to create new average post", error);
+          return false;
+        });
+    })
+    .catch((error) => {
+      console.log("unable to sync to create new average post", error);
+      return false;
+    });
+}
+
+export async function getAvgPost(longitude, latitude) {
+  if (!longitude || !latitude) return false;
+
+  return await sequelize
+    .sync()
+    .then(async () => {
+      avgPosts
+        .findAll({
+          where: {
+            [Op.and]: [
+              { longitude: `${longitude}` },
+              { latitude: `${latitude}` },
+            ],
+          },
+        })
+        .then((res) => {
+          if (res) {
+            console.log("found similar average posts");
+            return res;
+          } else {
+            console.log("unable to find similar average posts");
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.log("error when looking for average posts: ", error);
+          return false;
+        });
+    })
+    .catch((error) => {
+      console.log("error when syncing looking for average posts: ", error);
       return false;
     });
 }

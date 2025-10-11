@@ -3,7 +3,11 @@ import express from "express";
 import authorizeUser from "../../middleware/authorizeUser.js";
 import { getIpInfo } from "../../utils/getIpInfo.js";
 import { getLongLat } from "../../utils/geoCoding.js";
-import { createNewPost } from "../../database/posts.database.js";
+import {
+  createNewPost,
+  createAvgPost,
+  getAvgPost,
+} from "../../database/posts.database.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
 
@@ -65,6 +69,18 @@ router.post("/", authorizeUser, async (req, res) => {
       return res
         .status(500)
         .send("Server fault, unable to get restaurant accurate address");
+    }
+
+    // first check if an average post already exists, then update
+    const ifAvgPost = getAvgPost(restaurantLongLat[0], restaurantLongLat[1]);
+    if (ifAvgPost) {
+      const avgLong = ifAvgPost.longitude;
+      const avgLat = ifAvgPost.latitude;
+      const avgWeekday = ifAvgPost.weekday_tips_average;
+      const avgWeekend = ifAvgPost.weekend_tips_average;
+      const avgWorkEnv = ifAvgPost.work_environment_average;
+      const avgManagment = ifAvgPost.management_average;
+      const avgClientele = ifAvgPost.clientele_average;
     }
 
     const newPost = await createNewPost(
