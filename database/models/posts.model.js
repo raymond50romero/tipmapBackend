@@ -18,6 +18,14 @@ export const posts = sequelize.define(
         key: "user_id",
       },
     },
+    average_id_link: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "average_posts",
+        key: "average_post_id",
+      },
+    },
     restaurant_name: {
       type: DataTypes.STRING,
       allowNull: false,

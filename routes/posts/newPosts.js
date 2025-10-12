@@ -6,7 +6,7 @@ import { getLongLat } from "../../utils/geoCoding.js";
 import {
   createNewPost,
   createAvgPost,
-  getAvgPost,
+  getAvgPostByLongLat,
 } from "../../database/posts.database.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
@@ -72,7 +72,10 @@ router.post("/", authorizeUser, async (req, res) => {
     }
 
     // first check if an average post already exists, then update
-    const ifAvgPost = getAvgPost(restaurantLongLat[0], restaurantLongLat[1]);
+    const ifAvgPost = getAvgPostByLongLat(
+      restaurantLongLat[0],
+      restaurantLongLat[1],
+    );
     if (ifAvgPost) {
       const avgLong = ifAvgPost.longitude;
       const avgLat = ifAvgPost.latitude;

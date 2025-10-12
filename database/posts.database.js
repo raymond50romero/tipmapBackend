@@ -200,19 +200,29 @@ export async function createAvgPost(
   longitude,
   latitude,
   weekdayTips,
+  weekdayCount,
   weekendTips,
+  weekendCount,
   workEnv,
+  workEnvCount,
   management,
+  managementCount,
   clientele,
+  clienteleCount,
 ) {
   if (
     !longitude ||
     !latitude ||
     !weekdayTips ||
+    !weekdayCount ||
     !weekendTips ||
+    !weekendCount ||
     !workEnv ||
+    !workEnvCount ||
     !management ||
-    !clientele
+    !managementCount ||
+    !clientele ||
+    !clienteleCount
   )
     return false;
 
@@ -224,10 +234,15 @@ export async function createAvgPost(
           longitude: longitude,
           latitude: latitude,
           weekday_tips_average: weekdayTips,
+          weekday_tips_count: weekdayCount,
           weekend_tips_average: weekendTips,
+          weekend_tips_count: weekendCount,
           work_environment_average: workEnv,
+          work_environment_count: workEnvCount,
           management_average: management,
+          management_count: managementCount,
           clientele_average: clientele,
+          clientele_count: clienteleCount,
         })
         .then((res) => {
           if (res) {
@@ -248,7 +263,7 @@ export async function createAvgPost(
     });
 }
 
-export async function getAvgPost(longitude, latitude) {
+export async function getAvgPostByLongLat(longitude, latitude) {
   if (!longitude || !latitude) return false;
 
   return await sequelize
@@ -281,4 +296,15 @@ export async function getAvgPost(longitude, latitude) {
       console.log("error when syncing looking for average posts: ", error);
       return false;
     });
+}
+
+export async function updateAvgPostById(
+  avgPostId,
+  newAvgWeekday,
+  newAvgWeekend,
+  newWorkEnv,
+  newManagement,
+  newClientele,
+) {
+  if (!avgPostId) return false;
 }

@@ -24,7 +24,15 @@ export const avgPosts = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    weekday_tips_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     weekend_tips_average: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    weekend_tips_count: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -32,11 +40,23 @@ export const avgPosts = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    work_environment_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     management_average: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    management_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     clientele_average: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    clientele_count: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
