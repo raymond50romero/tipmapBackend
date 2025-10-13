@@ -301,10 +301,38 @@ export async function getAvgPostByLongLat(longitude, latitude) {
 export async function updateAvgPostById(
   avgPostId,
   newAvgWeekday,
+  newWeekdayCount,
   newAvgWeekend,
+  newWeekendCount,
   newWorkEnv,
+  newWorkEnvCount,
   newManagement,
+  newManagementCount,
   newClientele,
+  newClienteleCount,
 ) {
-  if (!avgPostId) return false;
+  if (
+    !avgPostId ||
+    !newAvgWeekday ||
+    !newWeekdayCount ||
+    !newAvgWeekend ||
+    !newWeekendCount ||
+    !newWorkEnv ||
+    !newWorkEnvCount ||
+    !newManagement ||
+    !newManagementCount ||
+    !newClientele ||
+    !newClienteleCount
+  )
+    return false;
+
+  return await sequelize.sync().then(async () => {
+    avgPosts.update({
+      weekday_tips_average: newAvgWeekday,
+      weekday_tips_count: newWeekdayCount,
+      weekend_tips_average: newAvgWeekend,
+      weekend_tips_count: newWeekendCount,
+      work_environment_average: newWorkEnvCount,
+    });
+  });
 }
