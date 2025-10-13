@@ -326,13 +326,41 @@ export async function updateAvgPostById(
   )
     return false;
 
-  return await sequelize.sync().then(async () => {
-    avgPosts.update({
-      weekday_tips_average: newAvgWeekday,
-      weekday_tips_count: newWeekdayCount,
-      weekend_tips_average: newAvgWeekend,
-      weekend_tips_count: newWeekendCount,
-      work_environment_average: newWorkEnvCount,
+  return await sequelize
+    .sync()
+    .then(async () => {
+      avgPosts
+        .update(
+          {
+            weekday_tips_average: newAvgWeekday,
+            weekday_tips_count: newWeekdayCount,
+            weekend_tips_average: newAvgWeekend,
+            weekend_tips_count: newWeekendCount,
+            work_environment_average: newWorkEnv,
+            work_environment_count: newWorkEnvCount,
+            management_average: newManagement,
+            management_count: newManagementCount,
+            clientele_average: newClientele,
+            clientele_count: newClienteleCount,
+          },
+          { where: { average_post_id: avgPostId } },
+        )
+        .then((res) => {
+          if (res) {
+            console.log("average post updated successfully");
+            return res;
+          } else {
+            console.log("unable to update average post");
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.log("error when updating average post: ", error);
+          return false;
+        });
+    })
+    .catch((error) => {
+      console.log("error when syncing to database: ", error);
+      return false;
     });
-  });
 }
