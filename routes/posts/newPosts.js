@@ -8,6 +8,7 @@ import {
   createAvgPost,
   getAvgPostByLongLat,
 } from "../../database/posts.database.js";
+import { getNewAverage } from "./utils/getAverages.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
 
@@ -77,13 +78,26 @@ router.post("/", authorizeUser, async (req, res) => {
       restaurantLongLat[1],
     );
     if (ifAvgPost) {
-      const avgLong = ifAvgPost.longitude;
-      const avgLat = ifAvgPost.latitude;
-      const avgWeekday = ifAvgPost.weekday_tips_average;
-      const avgWeekend = ifAvgPost.weekend_tips_average;
-      const avgWorkEnv = ifAvgPost.work_environment_average;
-      const avgManagment = ifAvgPost.management_average;
-      const avgClientele = ifAvgPost.clientele_average;
+      const newWeekday = getNewAverage(
+        ifAvgPost.weekday_tips_average,
+        ifAvgPost.weekday_tips_count,
+      );
+      const newWeekend = getNewAverage(
+        ifAvgPost.weekend_tips_average,
+        ifAvgPost.weekend_tips_count,
+      );
+      const newWorkEnv = getNewAverage(
+        ifAvgPost.work_environment_average,
+        ifAvgPost.work_environment_count,
+      );
+      const newManagement = getNewAverage(
+        ifAvgPost.management_average,
+        ifAvgPost.management_count,
+      );
+      const newClientele = getNewAverage(
+        ifAvgPost.clientele_average,
+        ifAvgPost.clientele_count,
+      );
     }
 
     const newPost = await createNewPost(
