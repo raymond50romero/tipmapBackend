@@ -24,6 +24,7 @@ import { avgPosts } from "./models/avgPosts.model.js";
  */
 export async function createNewPost(
   userId,
+  averageId,
   name,
   address,
   city,
@@ -40,6 +41,7 @@ export async function createNewPost(
 ) {
   if (
     !userId ||
+    !averageId ||
     !name ||
     !address ||
     !city ||
@@ -62,6 +64,7 @@ export async function createNewPost(
       return await posts
         .create({
           user_id_link: userId,
+          average_id_link: averageId,
           restaurant_name: name,
           restaurant_address: address,
           restaurant_city: city,
@@ -200,29 +203,19 @@ export async function createAvgPost(
   longitude,
   latitude,
   weekdayTips,
-  weekdayCount,
   weekendTips,
-  weekendCount,
   workEnv,
-  workEnvCount,
   management,
-  managementCount,
   clientele,
-  clienteleCount,
 ) {
   if (
     !longitude ||
     !latitude ||
     !weekdayTips ||
-    !weekdayCount ||
     !weekendTips ||
-    !weekendCount ||
     !workEnv ||
-    !workEnvCount ||
     !management ||
-    !managementCount ||
-    !clientele ||
-    !clienteleCount
+    !clientele
   )
     return false;
 
@@ -234,15 +227,15 @@ export async function createAvgPost(
           longitude: longitude,
           latitude: latitude,
           weekday_tips_average: weekdayTips,
-          weekday_tips_count: weekdayCount,
+          weekday_tips_count: 1,
           weekend_tips_average: weekendTips,
-          weekend_tips_count: weekendCount,
+          weekend_tips_count: 1,
           work_environment_average: workEnv,
-          work_environment_count: workEnvCount,
+          work_environment_count: 1,
           management_average: management,
-          management_count: managementCount,
+          management_count: 1,
           clientele_average: clientele,
-          clientele_count: clienteleCount,
+          clientele_count: 1,
         })
         .then((res) => {
           if (res) {

@@ -7,6 +7,7 @@ import {
   createNewPost,
   createAvgPost,
   getAvgPostByLongLat,
+  updateAvgPostById,
 } from "../../database/posts.database.js";
 import { getNewAverage } from "./utils/getAverages.js";
 
@@ -73,6 +74,7 @@ router.post("/", authorizeUser, async (req, res) => {
     }
 
     // first check if an average post already exists, then update
+    let avgPost;
     const ifAvgPost = getAvgPostByLongLat(
       restaurantLongLat[0],
       restaurantLongLat[1],
@@ -98,10 +100,40 @@ router.post("/", authorizeUser, async (req, res) => {
         ifAvgPost.clientele_average,
         ifAvgPost.clientele_count,
       );
+
+      avgPost = updateAvgPostById(
+        ifAvgPost.average_post_id,
+        newWeekday.newAvg,
+        newWeekday.newTotal,
+        newWeekend.newAvg,
+        newWeekend.newTotal,
+        newWorkEnv.newAvg,
+        newWorkEnv.newTotal,
+        newManagement.newAvg,
+        newManagement.newTotal,
+        newClientele.newAvg,
+        newClientele.newTotal,
+      );
+      if (avgPost) {
+        console.log("sucessfully updated: ", avgPost);
+      } else {
+        console.log("unable to update average result");
+      }
+    } else {
+      avgPost = createAvgPost(
+        restaurantLongLat[0],
+        restaurantLongLat[1],
+        weekdayTips,
+        weekendTips,
+        workenv,
+        management,
+        clientele,
+      );
     }
 
     const newPost = await createNewPost(
       user.user_id,
+      avgPost.average_post_id,
       name,
       address,
       city,
