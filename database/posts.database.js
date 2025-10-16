@@ -221,8 +221,8 @@ export async function createAvgPost(
 
   return await sequelize
     .sync()
-    .then(() => {
-      avgPosts
+    .then(async () => {
+      return await avgPosts
         .create({
           longitude: longitude,
           latitude: latitude,
@@ -262,7 +262,7 @@ export async function getAvgPostByLongLat(longitude, latitude) {
   return await sequelize
     .sync()
     .then(async () => {
-      avgPosts
+      return await avgPosts
         .findAll({
           where: {
             [Op.and]: [
@@ -272,11 +272,11 @@ export async function getAvgPostByLongLat(longitude, latitude) {
           },
         })
         .then((res) => {
-          if (res) {
-            console.log("found similar average posts");
+          if (Object.keys(res).length !== 0) {
+            console.log("found similar average posts: ", res);
             return res;
           } else {
-            console.log("unable to find similar average posts");
+            console.log("unable to find similar average posts: ", res);
             return false;
           }
         })
@@ -322,7 +322,7 @@ export async function updateAvgPostById(
   return await sequelize
     .sync()
     .then(async () => {
-      avgPosts
+      return await avgPosts
         .update(
           {
             weekday_tips_average: newAvgWeekday,

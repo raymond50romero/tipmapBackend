@@ -75,33 +75,39 @@ router.post("/", authorizeUser, async (req, res) => {
 
     // first check if an average post already exists, then update
     let avgPost;
-    const ifAvgPost = getAvgPostByLongLat(
+    const ifAvgPost = await getAvgPostByLongLat(
       restaurantLongLat[0],
       restaurantLongLat[1],
     );
     if (ifAvgPost) {
+      console.log("average post exists for new post: ", ifAvgPost);
       const newWeekday = getNewAverage(
         ifAvgPost.weekday_tips_average,
+        weekdayTips,
         ifAvgPost.weekday_tips_count,
       );
       const newWeekend = getNewAverage(
         ifAvgPost.weekend_tips_average,
+        weekendTips,
         ifAvgPost.weekend_tips_count,
       );
       const newWorkEnv = getNewAverage(
         ifAvgPost.work_environment_average,
+        workenv,
         ifAvgPost.work_environment_count,
       );
       const newManagement = getNewAverage(
         ifAvgPost.management_average,
+        management,
         ifAvgPost.management_count,
       );
       const newClientele = getNewAverage(
         ifAvgPost.clientele_average,
+        clientele,
         ifAvgPost.clientele_count,
       );
 
-      avgPost = updateAvgPostById(
+      avgPost = await updateAvgPostById(
         ifAvgPost.average_post_id,
         newWeekday.newAvg,
         newWeekday.newTotal,
@@ -120,7 +126,7 @@ router.post("/", authorizeUser, async (req, res) => {
         console.log("unable to update average result");
       }
     } else {
-      avgPost = createAvgPost(
+      avgPost = await createAvgPost(
         restaurantLongLat[0],
         restaurantLongLat[1],
         weekdayTips,
@@ -129,6 +135,7 @@ router.post("/", authorizeUser, async (req, res) => {
         management,
         clientele,
       );
+      console.log("no average post exists, creating new one: ", avgPost);
     }
 
     const newPost = await createNewPost(

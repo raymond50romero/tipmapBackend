@@ -11,10 +11,9 @@ export async function geocodingResults(url) {
     .get(url)
     .then((result) => {
       if (result) {
-        console.log("geocoding result: ", result);
         return result;
       } else {
-        console.log("no result");
+        console.log("no geocoding result");
         return false;
       }
     })

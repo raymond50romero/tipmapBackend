@@ -130,7 +130,9 @@ router.get("/", async (req, res) => {
       return a.distance - b.distance;
     });
 
-    return res.status(200).json(postsWithDistance);
+    console.log("this is posts with distance: ", postsWithDistance);
+
+    return res.status(200).json({ posts: postsWithDistance });
   } catch (error) {
     console.log("error getting posts:", error);
     return res.status(500).send("Server error retrieving posts");
