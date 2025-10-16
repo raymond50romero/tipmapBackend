@@ -6,6 +6,7 @@ import {
   toNumber,
   haversineDistance,
 } from "./utils/haversineDistance.js";
+import { bayesianShrinkage, globalAverage } from "./utils/bayesianShrinkage.js";
 
 const router = express.Router();
 
