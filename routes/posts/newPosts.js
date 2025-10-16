@@ -81,11 +81,16 @@ router.post("/", authorizeUser, async (req, res) => {
     );
     if (ifAvgPost) {
       console.log("average post exists for new post: ", ifAvgPost);
+      console.log(
+        "ifavgpost.weekday_tips_average: ",
+        ifAvgPost.weekday_tips_average,
+      );
       const newWeekday = getNewAverage(
         ifAvgPost.weekday_tips_average,
         weekdayTips,
         ifAvgPost.weekday_tips_count,
       );
+      console.log("this is newWeekday: ", newWeekday);
       const newWeekend = getNewAverage(
         ifAvgPost.weekend_tips_average,
         weekendTips,
@@ -138,9 +143,14 @@ router.post("/", authorizeUser, async (req, res) => {
       console.log("no average post exists, creating new one: ", avgPost);
     }
 
+    const postId = avgPost.average_post_id
+      ? avgPost.average_post_id
+      : ifAvgPost.average_post_id;
+    console.log("this is post id: ", postId);
+
     const newPost = await createNewPost(
       user.user_id,
-      avgPost.average_post_id,
+      postId,
       name,
       address,
       city,

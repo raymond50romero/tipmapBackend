@@ -274,7 +274,7 @@ export async function getAvgPostByLongLat(longitude, latitude) {
         .then((res) => {
           if (Object.keys(res).length !== 0) {
             console.log("found similar average posts: ", res);
-            return res;
+            return res[0];
           } else {
             console.log("unable to find similar average posts: ", res);
             return false;
@@ -340,7 +340,7 @@ export async function updateAvgPostById(
         )
         .then((res) => {
           if (res) {
-            console.log("average post updated successfully");
+            console.log("average post updated successfully: ", res);
             return res;
           } else {
             console.log("unable to update average post");

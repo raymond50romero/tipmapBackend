@@ -21,40 +21,45 @@ export const avgPosts = sequelize.define(
       validate: { min: -90, max: 90 },
     },
     weekday_tips_average: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(9, 6),
       allowNull: false,
+      validate: { min: -5, max: 5 },
     },
     weekday_tips_count: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     weekend_tips_average: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(9, 6),
       allowNull: false,
+      validate: { min: -5, max: 5 },
     },
     weekend_tips_count: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     work_environment_average: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(9, 6),
       allowNull: false,
+      validate: { min: -5, max: 5 },
     },
     work_environment_count: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     management_average: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(9, 6),
       allowNull: false,
+      validate: { min: -5, max: 5 },
     },
     management_count: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     clientele_average: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(9, 6),
       allowNull: false,
+      validate: { min: -5, max: 5 },
     },
     clientele_count: {
       type: DataTypes.INTEGER,
