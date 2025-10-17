@@ -130,7 +130,12 @@ router.get("/", async (req, res) => {
       return a.distance - b.distance;
     });
 
-    console.log("this is posts with distance: ", postsWithDistance);
+    // posts are ordered, grab all of the average links
+    const averagePostsId = [];
+    const localMeans = [];
+    for (let i in postsWithDistance) {
+      averagePostsId.push(postsWithDistance[i].average_id_link);
+    }
 
     return res.status(200).json({ posts: postsWithDistance });
   } catch (error) {
