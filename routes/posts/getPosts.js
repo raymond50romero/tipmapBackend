@@ -6,6 +6,7 @@ import {
   toNumber,
   haversineDistance,
 } from "./utils/haversineDistance.js";
+import { getAvgPostById } from "../../database/averagePosts.database.js";
 import { bayesianShrinkage, globalAverage } from "./utils/bayesianShrinkage.js";
 
 const router = express.Router();
@@ -130,14 +131,64 @@ router.get("/", async (req, res) => {
       return a.distance - b.distance;
     });
 
-    // posts are ordered, grab all of the average links
-    const averagePostsId = [];
-    const localMeans = [];
+    // posts are ordered, grab all of the average links and find global average
+    let avgPostIds = [];
+    const localWeekdayMeans = [];
+    const localWeekendMeans = [];
     for (let i in postsWithDistance) {
-      averagePostsId.push(postsWithDistance[i].average_id_link);
+      if (!avgPostIds.includes(postsWithDistance[i].average_id_link)) {
+        avgPostIds.push(postsWithDistance[i].average_id_link);
+        let avgPost = await getAvgPostById(
+          postsWithDistance[i].average_id_link,
+        );
+
+        localWeekdayMeans[i] = {
+          mean: avgPost.weekday_tips_average,
+          total: avgPost.weekday_tips_count,
+        };
+        localWeekendMeans[i] = {
+          mean: avgPost.weekend_tips_average,
+          total: avgPost.weekend_tips_average,
+        };
+      }
+    }
+    const weekdayGlobalAverage = globalAverage(localWeekdayMeans);
+    const weekendGlobalAverage = globalAverage(localWeekendMeans);
+
+    //have global average, now perform bayesian shrinkage of each location
+    avgPostIds = [];
+    const weightsData = [];
+    const priorStrength = 5;
+    for (let i in postsWithDistance) {
+      if (!avgPostIds.includes(postsWithDistance[i].average_id_link)) {
+        avgPostIds.push(postsWithDistance[i].average_id_link);
+        let avgPost = await getAvgPostById(
+          postsWithDistance[i].average_id_link,
+        );
+        let weekdayBayesian = bayesianShrinkage(
+          avgPost.weekday_tips_average,
+          avgPost.weekday_tips_count,
+          weekdayGlobalAverage,
+          priorStrength,
+        );
+        let weekendBayesian = bayesianShrinkage(
+          avgPost.weekend_tips_average,
+          avgPost.weekend_tips_count,
+          weekendGlobalAverage,
+          priorStrength,
+        );
+        weightsData[i] = {
+          longitude: avgPost.longitude,
+          latitude: avgPost.latitude,
+          weekdayWeight: weekdayBayesian,
+          weekendWeight: weekendBayesian,
+        };
+      }
     }
 
-    return res.status(200).json({ posts: postsWithDistance });
+    return res
+      .status(200)
+      .json({ posts: postsWithDistance, weightsData: weightsData });
   } catch (error) {
     console.log("error getting posts:", error);
     return res.status(500).send("Server error retrieving posts");

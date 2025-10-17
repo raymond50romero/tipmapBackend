@@ -3,12 +3,12 @@ import express from "express";
 import authorizeUser from "../../middleware/authorizeUser.js";
 import { getIpInfo } from "../../utils/getIpInfo.js";
 import { getLongLat } from "../../utils/geoCoding.js";
+import { createNewPost } from "../../database/posts.database.js";
 import {
-  createNewPost,
   createAvgPost,
   getAvgPostByLongLat,
   updateAvgPostById,
-} from "../../database/posts.database.js";
+} from "../../database/averagePosts.database.js";
 import { getNewAverage } from "./utils/getAverages.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
