@@ -65,7 +65,6 @@ router.post("/", authorizeUser, async (req, res) => {
     }
 
     const restaurantLongLat = await getLongLat(url);
-    console.log("this is restaurant longLat: ", restaurantLongLat);
     if (!restaurantLongLat) {
       console.log("unable to get longitude and latitude");
       return res
@@ -80,17 +79,11 @@ router.post("/", authorizeUser, async (req, res) => {
       restaurantLongLat[1],
     );
     if (ifAvgPost) {
-      console.log("average post exists for new post: ", ifAvgPost);
-      console.log(
-        "ifavgpost.weekday_tips_average: ",
-        ifAvgPost.weekday_tips_average,
-      );
       const newWeekday = getNewAverage(
         ifAvgPost.weekday_tips_average,
         weekdayTips,
         ifAvgPost.weekday_tips_count,
       );
-      console.log("this is newWeekday: ", newWeekday);
       const newWeekend = getNewAverage(
         ifAvgPost.weekend_tips_average,
         weekendTips,
@@ -146,7 +139,6 @@ router.post("/", authorizeUser, async (req, res) => {
     const postId = avgPost.average_post_id
       ? avgPost.average_post_id
       : ifAvgPost.average_post_id;
-    console.log("this is post id: ", postId);
 
     const newPost = await createNewPost(
       user.user_id,
