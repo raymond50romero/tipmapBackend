@@ -21,8 +21,6 @@ export function getAverage(ratings) {
  */
 export function getNewAverage(oldAvg, newValue, n) {
   const newAvg = (oldAvg * n + newValue) / (n + 1);
-  console.log("this is new average: ", newAvg);
   const newTotal = n + 1;
-  console.log("this is new total: ", newTotal);
   return { newAvg: newAvg, newTotal: newTotal };
 }

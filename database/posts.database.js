@@ -99,37 +99,6 @@ export async function createNewPost(
 }
 
 /**
- * get all the posts in the database
- *
- * @returns {Promise<object[]|boolean>} object that contains all of the posts in the database, false otherwise
- */
-export async function getPosts() {
-  return await sequelize
-    .sync()
-    .then(async () => {
-      return await posts
-        .findAll()
-        .then((res) => {
-          if (res) {
-            console.log("found all posts: ", res);
-            return res;
-          } else {
-            console.log("res is null getting posts");
-            return false;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          return false;
-        });
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-}
-
-/**
  * Fetch posts constrained to a latitude/longitude bounding box.
  *
  * @param {object} bounds
@@ -287,6 +256,36 @@ export async function getAvgPostByLongLat(longitude, latitude) {
     })
     .catch((error) => {
       console.log("error when syncing looking for average posts: ", error);
+      return false;
+    });
+}
+
+export async function getAvgPostById(avgPostId) {
+  if (!avgPostId) return false;
+
+  return await sequelize
+    .sync()
+    .then(async () => {
+      return await avgPosts
+        .findAll({
+          where: { average_post_id: avgPostId },
+        })
+        .then((res) => {
+          if (res) {
+            console.log("found average post: ", res);
+            return res;
+          } else {
+            console.log("unable to find average post");
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.log("error when grabbing average post by id: ", error);
+          return false;
+        });
+    })
+    .catch((error) => {
+      console.log("error when syncing to database: ", error);
       return false;
     });
 }
