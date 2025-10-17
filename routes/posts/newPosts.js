@@ -64,12 +64,18 @@ router.post("/", authorizeUser, async (req, res) => {
       url += `&proximity=${longEncoded},${latEncoded}`;
     }
 
-    const restaurantLongLat = await getLongLat(url);
+    console.log("this is url: ", url);
+
+    const restaurantLongLat = await getLongLat(url, state.trim());
     if (!restaurantLongLat) {
-      console.log("unable to get longitude and latitude");
+      console.log(
+        "unable to get longitude and latitude, address given may be incorrect",
+      );
       return res
         .status(500)
-        .send("Server fault, unable to get restaurant accurate address");
+        .send(
+          "Server fault, unable to get restaurant accurate address. Is the address given correct?",
+        );
     }
 
     // first check if an average post already exists, then update

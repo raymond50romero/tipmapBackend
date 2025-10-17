@@ -1,4 +1,5 @@
 import axios from "axios";
+import { states } from "./50states.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
 
@@ -23,10 +24,22 @@ export async function geocodingResults(url) {
     });
 }
 
-export async function getLongLat(url) {
+export async function getLongLat(url, state) {
   const geocode = await geocodingResults(url);
-  return [
-    geocode.data.features[0].properties.coordinates.longitude,
-    geocode.data.features[0].properties.coordinates.latitude,
-  ];
+  let ans;
+  for (let i in geocode.data.features) {
+    if (
+      geocode.data.features[i].properties.place_formatted.includes(
+        states[state],
+      )
+    ) {
+      ans = [
+        geocode.data.features[i].properties.coordinates.longitude,
+        geocode.data.features[i].properties.coordinates.latitude,
+      ];
+    }
+  }
+  if (!ans) ans = false;
+
+  return ans;
 }
