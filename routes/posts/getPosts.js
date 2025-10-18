@@ -159,6 +159,7 @@ router.get("/", async (req, res) => {
     avgPostIds = [];
     const weightsData = [];
     const priorStrength = 5;
+    let weightsCount = 0;
     for (let i in postsWithDistance) {
       if (!avgPostIds.includes(postsWithDistance[i].average_id_link)) {
         avgPostIds.push(postsWithDistance[i].average_id_link);
@@ -177,12 +178,13 @@ router.get("/", async (req, res) => {
           weekendGlobalAverage,
           priorStrength,
         );
-        weightsData[i] = {
+        weightsData[weightsCount] = {
           longitude: avgPost.longitude,
           latitude: avgPost.latitude,
           weekdayWeight: weekdayBayesian,
           weekendWeight: weekendBayesian,
         };
+        weightsCount++;
       }
     }
 
