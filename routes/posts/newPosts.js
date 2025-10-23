@@ -1,8 +1,7 @@
 import express from "express";
 
 import authorizeUser from "../../middleware/authorizeUser.js";
-import { getIpInfo } from "../../utils/getIpInfo.js";
-import { getLongLat } from "../../utils/geoCoding.js";
+import { getLongLat } from "./utils/getLongLat.js";
 import { createNewPost } from "../../database/posts.database.js";
 import {
   createAvgPost,
@@ -48,12 +47,6 @@ router.post("/", authorizeUser, async (req, res) => {
   try {
     if (!mapboxToken) throw new Error("Missing mapbox token");
 
-    // potentially looking at ways to verify the user is from the united states, idk if that will be possible
-    //const userIpInfo = await getIpInfo(req.ip);
-    //const userCountry = userIpInfo.country_code;
-
-    // TODO check if the cache holds what I need, for now just go on
-
     const encoded = encodeURIComponent(
       address.trim() + city.trim() + state.trim(),
     );
@@ -68,7 +61,11 @@ router.post("/", authorizeUser, async (req, res) => {
     console.log("this is url: ", url);
     console.log();
 
-    const restaurantLongLat = await getLongLat(url, state.trim());
+    const restaurantLongLat = await getLongLat(
+      address.trim(),
+      city.trim(),
+      state.trim(),
+    );
     console.log("this is Restaurant long lat: ", restaurantLongLat);
     if (!restaurantLongLat) {
       console.log(
@@ -84,8 +81,8 @@ router.post("/", authorizeUser, async (req, res) => {
     // first check if an average post already exists, then update
     let avgPost;
     const ifAvgPost = await getAvgPostByLongLat(
-      restaurantLongLat[0],
-      restaurantLongLat[1],
+      restaurantLongLat["lng"],
+      restaurantLongLat["lat"],
     );
     if (ifAvgPost) {
       const newWeekday = getNewAverage(
@@ -134,8 +131,8 @@ router.post("/", authorizeUser, async (req, res) => {
       }
     } else {
       avgPost = await createAvgPost(
-        restaurantLongLat[0],
-        restaurantLongLat[1],
+        restaurantLongLat["lng"],
+        restaurantLongLat["lat"],
         weekdayTips,
         weekendTips,
         workenv,
@@ -156,8 +153,8 @@ router.post("/", authorizeUser, async (req, res) => {
       address,
       city,
       state,
-      restaurantLongLat[0],
-      restaurantLongLat[1],
+      restaurantLongLat["lng"],
+      restaurantLongLat["lat"],
       weekdayTips,
       weekendTips,
       workenv,

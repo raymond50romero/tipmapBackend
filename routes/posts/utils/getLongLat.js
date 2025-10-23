@@ -4,7 +4,7 @@ const GOOGLE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 /**
  * Geocode an address using Google Maps Geocoding API
- * @param {string} address - street adrdress
+ * @param {string} address - street address
  * @param {string} city - city name
  * @param {string} state - state abbr
  * @returns {Promise<{lat: number, lng: number, formatted_address: string, precision: string}>}
@@ -26,7 +26,6 @@ export async function getLongLat(address, city, state) {
         params: {
           address: fullAddress,
           key: GOOGLE_API_KEY,
-          // Optional: restrict to US addresses
           components: "country:US",
         },
         timeout: 8000,
