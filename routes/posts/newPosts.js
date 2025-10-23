@@ -64,9 +64,12 @@ router.post("/", authorizeUser, async (req, res) => {
       url += `&proximity=${longEncoded},${latEncoded}`;
     }
 
+    console.log();
     console.log("this is url: ", url);
+    console.log();
 
     const restaurantLongLat = await getLongLat(url, state.trim());
+    console.log("this is Restaurant long lat: ", restaurantLongLat);
     if (!restaurantLongLat) {
       console.log(
         "unable to get longitude and latitude, address given may be incorrect",

@@ -16,11 +16,6 @@ export function bayesianShrinkage(
     return false;
   }
 
-  console.log("this is avgRating: ", avgRating);
-  console.log("this is totalRatings: ", totalRatings);
-  console.log("this is globalAvg: ", globalAvg);
-  console.log("this is priorStrength: ", priorStrength);
-
   const numerator = totalRatings * avgRating + priorStrength * globalAvg;
   const denominator = totalRatings + priorStrength;
   return numerator / denominator / 5;
@@ -35,8 +30,6 @@ export function globalAverage(localMeans) {
     console.log("local means is missing from global average");
     return false;
   }
-
-  console.log("this is local means inside global average: ", localMeans);
 
   let numerator = 0;
   let denominator = 0;

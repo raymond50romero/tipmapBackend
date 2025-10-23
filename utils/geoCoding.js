@@ -26,6 +26,9 @@ export async function geocodingResults(url) {
 
 export async function getLongLat(url, state) {
   const geocode = await geocodingResults(url);
+  console.log();
+  console.log("this is geocoding.data results: ", geocode.data.features);
+  console.log();
   let ans;
   for (let i in geocode.data.features) {
     if (
@@ -37,6 +40,7 @@ export async function getLongLat(url, state) {
         geocode.data.features[i].properties.coordinates.longitude,
         geocode.data.features[i].properties.coordinates.latitude,
       ];
+      console.log("this is the long lat ans: ", ans);
     }
   }
   if (!ans) ans = false;

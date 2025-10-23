@@ -188,6 +188,8 @@ router.get("/", async (req, res) => {
       }
     }
 
+    delete postsWithDistance.average_id_link;
+
     return res
       .status(200)
       .json({ posts: postsWithDistance, weightsData: weightsData });
