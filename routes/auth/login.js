@@ -49,7 +49,12 @@ router.post("/", async (req, res) => {
     sameSite: "none",
     secure: true,
   });
-  return res.status(200).send(`Login successful for ${user.username}`);
+
+  const responseObj = {
+    message: `Login successful for ${user.username}`,
+    payload: user,
+  };
+  return res.status(200).send(responseObj);
 });
 
 /**************************
