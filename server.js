@@ -9,6 +9,7 @@ import createAccountRouter from "./routes/auth/createAccount.js";
 import loginRouter from "./routes/auth/login.js";
 import newPostsRouter from "./routes/posts/newPosts.js";
 import getPostsRouter from "./routes/posts/getPosts.js";
+import checkUser from "./routes/auth/checkUser.js";
 
 // add urls in the future
 const allowedOrigins = ["http://localhost:3000"];
@@ -53,6 +54,7 @@ app.use("/createAccount", createAccountRouter);
 app.use("/login", loginRouter);
 app.use("/newPost", newPostsRouter);
 app.use("/getPosts", getPostsRouter);
+app.use("/checkUser", checkUser);
 
 httpServer.listen(PORT, () => {
   console.log(`server ${SERVER} is running on port ${PORT}`);

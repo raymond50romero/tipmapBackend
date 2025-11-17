@@ -50,6 +50,9 @@ router.post("/", async (req, res) => {
     secure: true,
   });
 
+  delete user.user_id;
+  delete user.password;
+
   const responseObj = {
     message: `Login successful for ${user.username}`,
     payload: user,
@@ -69,6 +72,7 @@ async function checkPasswordAndGetToken(existingUser, password) {
   if (!isValidPassword) return false;
   else {
     delete existingUser.password;
+    delete existingUser.user_id;
 
     const userToken = jwt.sign(
       { userId: existingUser.user_id },
