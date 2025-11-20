@@ -9,8 +9,6 @@ router.get("/", authorizeUser, async (req, res) => {
   const user = req.user;
 
   if (user) {
-    console.log("user is authorized: ", user);
-
     delete user.user_id;
     delete user.password;
 

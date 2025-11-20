@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 // import routes
 import createAccountRouter from "./routes/auth/createAccount.js";
 import loginRouter from "./routes/auth/login.js";
+import logoutRouter from "./routes/auth/logout.js";
 import newPostsRouter from "./routes/posts/newPosts.js";
 import getPostsRouter from "./routes/posts/getPosts.js";
 import checkUser from "./routes/auth/checkUser.js";
@@ -52,6 +53,7 @@ const httpServer = http.createServer(app);
 
 app.use("/createAccount", createAccountRouter);
 app.use("/login", loginRouter);
+app.use("/logout", logoutRouter);
 app.use("/newPost", newPostsRouter);
 app.use("/getPosts", getPostsRouter);
 app.use("/checkUser", checkUser);
