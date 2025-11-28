@@ -50,8 +50,20 @@ router.post("/", async (req, res) => {
     secure: true,
   });
 
-  delete user.user_id;
-  delete user.password;
+  delete user.dataValues.user_id;
+  delete user.dataValues.password;
+
+  const occupations = [];
+  if (user.dataValues.bartender) {
+    occupations[0] = "bartender";
+  }
+  if (user.dataValues.server) {
+    occupations[1] = "server";
+  }
+  if (user.dataValues.other) {
+    occupations[2] = user.dataValues.other;
+  }
+  user.dataValues["occupations"] = occupations;
 
   const responseObj = {
     message: `Login successful for ${user.username}`,

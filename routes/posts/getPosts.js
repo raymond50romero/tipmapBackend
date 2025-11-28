@@ -103,11 +103,14 @@ router.get("/", async (req, res) => {
         .send("Server error, unable to retrieve posts for bounds");
     }
 
-    delete posts.createdAt;
-    delete posts.deletedAt;
-    delete posts.post_id;
-    delete posts.updatedAt;
-    delete posts.user_id_link;
+    /*
+     * this won't work because posts is an array, need to iterate through each deleting it 
+     * or delete them as they are fetched from the database
+    delete posts.dataValues.deletedAt;
+    delete posts.dataValues.post_id;
+    delete posts.dataValues.updatedAt;
+    delete posts.dataValues.user_id_link;
+    */
 
     const postsWithDistance = posts.map((post) => {
       const postData = post.get({ plain: true });
@@ -156,9 +159,13 @@ router.get("/", async (req, res) => {
     const weekendGlobalAverage = globalAverage(localWeekendMeans);
 
     //have global average, now perform bayesian shrinkage of each location
+    // testing priorStrengths
+    // priorStrength at 1: .36 .46 .76
+    // priorStrength at 20: .51 .52 .55
+    // conclusion, the more data you get, the highter the priorStrength
     avgPostIds = [];
     const weightsData = [];
-    const priorStrength = 5;
+    const priorStrength = 1;
     let weightsCount = 0;
     for (let i in postsWithDistance) {
       if (!avgPostIds.includes(postsWithDistance[i].average_id_link)) {

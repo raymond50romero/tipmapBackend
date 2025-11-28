@@ -60,7 +60,10 @@ export async function createAvgPost(
 }
 
 export async function getAvgPostByLongLat(longitude, latitude) {
-  if (!longitude || !latitude) return false;
+  if (!longitude || !latitude) {
+    console.log("no long or lat in getAvgPostByLongLat");
+    return false;
+  }
 
   return await sequelize
     .sync()
@@ -68,10 +71,8 @@ export async function getAvgPostByLongLat(longitude, latitude) {
       return await avgPosts
         .findAll({
           where: {
-            [Op.and]: [
-              { longitude: `${longitude}` },
-              { latitude: `${latitude}` },
-            ],
+            longitude: longitude,
+            latitude: latitude,
           },
         })
         .then((res) => {

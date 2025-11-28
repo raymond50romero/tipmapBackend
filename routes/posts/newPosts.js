@@ -80,10 +80,13 @@ router.post("/", authorizeUser, async (req, res) => {
 
     // first check if an average post already exists, then update
     let avgPost;
+    const truncatedRestLong = Math.trunc(restaurantLongLat["lng"], 1e6) / 1e6;
+    const truncatedRestLat = Math.trunc(restaurantLongLat["lat"], 1e6) / 1e6;
     const ifAvgPost = await getAvgPostByLongLat(
-      restaurantLongLat["lng"],
-      restaurantLongLat["lat"],
+      truncatedRestLong,
+      truncatedRestLat,
     );
+    console.log("this is result from trying to find ifAvgPost: ", ifAvgPost);
     if (ifAvgPost) {
       const newWeekday = getNewAverage(
         ifAvgPost.weekday_tips_average,
@@ -131,8 +134,8 @@ router.post("/", authorizeUser, async (req, res) => {
       }
     } else {
       avgPost = await createAvgPost(
-        restaurantLongLat["lng"],
-        restaurantLongLat["lat"],
+        truncatedRestLong,
+        truncatedRestLat,
         weekdayTips,
         weekendTips,
         workenv,
