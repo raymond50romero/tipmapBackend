@@ -80,8 +80,8 @@ router.post("/", authorizeUser, async (req, res) => {
 
     // first check if an average post already exists, then update
     let avgPost;
-    const truncatedRestLong = Math.trunc(restaurantLongLat["lng"], 1e6) / 1e6;
-    const truncatedRestLat = Math.trunc(restaurantLongLat["lat"], 1e6) / 1e6;
+    const truncatedRestLong = Math.trunc(restaurantLongLat["lng"] * 1e6) / 1e6;
+    const truncatedRestLat = Math.trunc(restaurantLongLat["lat"] * 1e6) / 1e6;
     const ifAvgPost = await getAvgPostByLongLat(
       truncatedRestLong,
       truncatedRestLat,
