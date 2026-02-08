@@ -1,7 +1,6 @@
 import express from "express";
 
 import authorizeUser from "../../middleware/authorizeUser.js";
-import { getLongLat } from "./utils/getLongLat.js";
 import { createNewPost } from "../../database/posts.database.js";
 import {
   createAvgPost,
@@ -9,6 +8,7 @@ import {
   updateAvgPostById,
 } from "../../database/averagePosts.database.js";
 import { getNewAverage } from "./utils/getAverages.js";
+import { getIpInfo } from "../../utils/getIpInfo.js";
 
 const mapboxToken = process.env.MAP_TOKEN;
 
@@ -61,11 +61,6 @@ router.post("/", authorizeUser, async (req, res) => {
     console.log("this is url: ", url);
     console.log();
 
-    const restaurantLongLat = await getLongLat(
-      address.trim(),
-      city.trim(),
-      state.trim(),
-    );
     console.log("this is Restaurant long lat: ", restaurantLongLat);
     if (!restaurantLongLat) {
       console.log(
