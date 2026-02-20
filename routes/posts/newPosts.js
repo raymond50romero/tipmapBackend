@@ -4,7 +4,7 @@ import authorizeUser from "../../middleware/authorizeUser.js";
 import { createNewPost } from "../../database/posts.database.js";
 import {
   createAvgPost,
-  getAvgPostByLongLat,
+  getAvgPostById,
   updateAvgPostById,
 } from "../../database/averagePosts.database.js";
 import { getNewAverage } from "./utils/getAverages.js";
@@ -36,7 +36,7 @@ router.post("/", authorizeUser, async (req, res) => {
 
   const user = req.user;
   if (!user) return res.status(400).send("no user found");
-
+  if (!mapCenter) return res.status(400).send("No map center");
   if (!brandId) return res.status(400).send("Brand id missing");
   if (!mapboxId) return res.status(400).send("Mapbox id missing");
   if (!name) return res.status(400).send("Restaurant name missing");
@@ -54,6 +54,7 @@ router.post("/", authorizeUser, async (req, res) => {
   try {
     if (!mapboxToken) throw new Error("Missing mapbox token");
 
+    // prepare url to get longitude and latitude if needed
     const encoded = encodeURIComponent(address.trim() + "," + place.trim());
     let url = `https://api.mapbox.com/search/geocode/v6/forward?q=${encoded}`;
     let longEncoded;
@@ -72,13 +73,9 @@ router.post("/", authorizeUser, async (req, res) => {
     console.log();
 
     // first check if an average post already exists, then update
+    // if not create a new average post using mapbox id
     let avgPost;
-    const truncatedRestLong = Math.trunc(longitude * 1e6) / 1e6;
-    const truncatedRestLat = Math.trunc(latitude * 1e6) / 1e6;
-    const ifAvgPost = await getAvgPostByLongLat(
-      truncatedRestLong,
-      truncatedRestLat,
-    );
+    const ifAvgPost = await getAvgPostById(mapboxId);
     console.log("this is result from trying to find ifAvgPost: ", ifAvgPost);
     if (ifAvgPost) {
       const newWeekday = getNewAverage(
@@ -108,7 +105,7 @@ router.post("/", authorizeUser, async (req, res) => {
       );
 
       avgPost = await updateAvgPostById(
-        ifAvgPost.average_post_id,
+        mapboxId,
         newWeekday.newAvg,
         newWeekday.newTotal,
         newWeekend.newAvg,
@@ -126,9 +123,16 @@ router.post("/", authorizeUser, async (req, res) => {
         console.log("unable to update average result");
       }
     } else {
+      // chatgpt way of truncating
+      //const truncatedLong = Math.trunc(longitude * 1e6) / 1e6;
+      //const truncatedLat = Math.trunc(latitude * 1e6) / 1e6;
+      //gemini way of truncating, better
+      const truncatedLong = parseFloat(longitude.toFixed(6));
+      const truncatedLat = parseFloat(longitude.toFixed(6));
       avgPost = await createAvgPost(
-        truncatedRestLong,
-        truncatedRestLat,
+        mapboxId,
+        truncatedLong,
+        truncatedLat,
         weekdayTips,
         weekendTips,
         workenv,

@@ -3,6 +3,7 @@ import { sequelize } from "./models/connect.js";
 import { avgPosts } from "./models/avgPosts.model.js";
 
 export async function createAvgPost(
+  mapboxId,
   longitude,
   latitude,
   weekdayTips,
@@ -12,6 +13,7 @@ export async function createAvgPost(
   clientele,
 ) {
   if (
+    !mapboxId ||
     !longitude ||
     !latitude ||
     !weekdayTips ||
@@ -27,6 +29,7 @@ export async function createAvgPost(
     .then(async () => {
       return await avgPosts
         .create({
+          mapbox_id: mapboxId,
           longitude: longitude,
           latitude: latitude,
           weekday_tips_average: weekdayTips,
@@ -95,15 +98,22 @@ export async function getAvgPostByLongLat(longitude, latitude) {
     });
 }
 
-export async function getAvgPostById(avgPostId) {
-  if (!avgPostId) return false;
+/**
+ * find average post by the mapbox id given in mapbox search
+ *
+ * @param {number} mapboxId
+ *
+ * @returns {Promise<object[]|boolean>}
+ */
+export async function getAvgPostById(mapboxId) {
+  if (!mapboxId) return false;
 
   return await sequelize
     .sync()
     .then(async () => {
       return await avgPosts
         .findAll({
-          where: { average_post_id: avgPostId },
+          where: { mapbox_id: mapboxId },
         })
         .then((res) => {
           if (Object.keys(res).length !== 0) {
@@ -126,7 +136,7 @@ export async function getAvgPostById(avgPostId) {
 }
 
 export async function updateAvgPostById(
-  avgPostId,
+  mapboxId,
   newAvgWeekday,
   newWeekdayCount,
   newAvgWeekend,
@@ -139,7 +149,7 @@ export async function updateAvgPostById(
   newClienteleCount,
 ) {
   if (
-    !avgPostId ||
+    !mapboxId ||
     !newAvgWeekday ||
     !newWeekdayCount ||
     !newAvgWeekend ||
@@ -170,7 +180,7 @@ export async function updateAvgPostById(
             clientele_average: newClientele,
             clientele_count: newClienteleCount,
           },
-          { where: { average_post_id: avgPostId } },
+          { where: { mapbox_id: mapboxId } },
         )
         .then((res) => {
           if (res) {

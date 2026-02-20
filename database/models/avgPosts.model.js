@@ -10,6 +10,10 @@ export const avgPosts = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
+    mapbox_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     longitude: {
       type: DataTypes.DECIMAL(9, 6),
       allowNull: false,
