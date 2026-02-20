@@ -24,10 +24,11 @@ import { posts } from "./models/posts.model.js";
 export async function createNewPost(
   userId,
   averageId,
+  brandId,
+  mapboxId,
   name,
   address,
-  city,
-  state,
+  place,
   longitude,
   latitude,
   weekdayTips,
@@ -41,10 +42,11 @@ export async function createNewPost(
   if (
     !userId ||
     !averageId ||
+    !brandId ||
+    !mapboxId ||
     !name ||
     !address ||
-    !city ||
-    !state ||
+    !place ||
     !longitude ||
     !latitude ||
     !weekdayTips ||
@@ -64,10 +66,11 @@ export async function createNewPost(
         .create({
           user_id_link: userId,
           average_id_link: averageId,
+          brand_id: brandId,
+          mapbox_id: mapboxId,
           restaurant_name: name,
           restaurant_address: address,
-          restaurant_city: city,
-          restaurant_state: state,
+          restaurant_place: place,
           longitude: longitude,
           latitude: latitude,
           weekday_tips: weekdayTips,

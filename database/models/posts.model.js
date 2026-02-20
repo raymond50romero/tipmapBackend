@@ -26,6 +26,14 @@ export const posts = sequelize.define(
         key: "average_post_id",
       },
     },
+    brand_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    mapbox_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     restaurant_name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -34,11 +42,7 @@ export const posts = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    restaurant_city: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    restaurant_state: {
+    restaurant_place: {
       type: DataTypes.STRING,
       allowNull: false,
     },
