@@ -34,6 +34,10 @@ router.post("/", authorizeUser, async (req, res) => {
     comment,
   } = req.body;
 
+  console.log();
+  console.log("this is req.body: ", req.body);
+  console.log();
+
   const user = req.user;
   if (!user) return res.status(400).send("no user found");
   if (!mapCenter) return res.status(400).send("No map center");
@@ -128,7 +132,11 @@ router.post("/", authorizeUser, async (req, res) => {
       //const truncatedLat = Math.trunc(latitude * 1e6) / 1e6;
       //gemini way of truncating, better
       const truncatedLong = parseFloat(longitude.toFixed(6));
-      const truncatedLat = parseFloat(longitude.toFixed(6));
+      const truncatedLat = parseFloat(latitude.toFixed(6));
+      console.log();
+      console.log("this is t long: ", truncatedLong);
+      console.log("this is t lat: ", truncatedLat);
+      console.log();
       avgPost = await createAvgPost(
         mapboxId,
         truncatedLong,
@@ -146,10 +154,21 @@ router.post("/", authorizeUser, async (req, res) => {
       ? avgPost.average_post_id
       : ifAvgPost.average_post_id;
 
+    // check that brandId is a string
+    let brandIdInput;
+    if (Array.isArray(brandId)) {
+      brandIdInput = brandId[0];
+    } else if (typeof brandId === "object") {
+      const values = Object.values(brandId);
+      brandIdInput = values[0];
+    } else {
+      brandIdInput = brandId;
+    }
+
     const newPost = await createNewPost(
       user.user_id,
       postId,
-      brandId,
+      brandIdInput,
       mapboxId,
       name,
       address,

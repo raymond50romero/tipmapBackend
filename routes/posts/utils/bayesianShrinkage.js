@@ -1,3 +1,50 @@
+import { getAvgPostById } from "../../../database/averagePosts.database.js";
+
+/**
+ * @param {Object} postsWithDistance
+ * @param {Number} weekdayGlobalAverage
+ * @param {Number} weekendGlobalAverage
+ * @returns {Array}
+ */
+export default async function doBayesianShrinkage(
+  postsWithDistance,
+  weekdayGlobalAverage,
+  weekendGlobalAverage,
+) {
+  const avgPostIds = [];
+  const weightsData = [];
+  const priorStrength = 1;
+
+  let weightsCount = 0;
+  for (let i in postsWithDistance) {
+    if (!avgPostIds.includes(postsWithDistance[i].average_id_link)) {
+      avgPostIds.push(postsWithDistance[i].average_id_link);
+      let avgPost = await getAvgPostById(postsWithDistance[i].average_id_link);
+      let weekdayBayesian = bayesianShrinkage(
+        avgPost.weekday_tips_average,
+        avgPost.weekday_tips_count,
+        weekdayGlobalAverage,
+        priorStrength,
+      );
+      let weekendBayesian = bayesianShrinkage(
+        avgPost.weekend_tips_average,
+        avgPost.weekend_tips_count,
+        weekendGlobalAverage,
+        priorStrength,
+      );
+      weightsData[weightsCount] = {
+        longitude: avgPost.longitude,
+        latitude: avgPost.latitude,
+        weekdayWeight: weekdayBayesian,
+        weekendWeight: weekendBayesian,
+      };
+      weightsCount++;
+    }
+  }
+
+  return weightsData;
+}
+
 /**
  * @param {number} avgRating
  * @param {number} totalRatings
@@ -5,12 +52,7 @@
  * @param {number} priorStrength
  *
  */
-export function bayesianShrinkage(
-  avgRating,
-  totalRatings,
-  globalAvg,
-  priorStrength,
-) {
+function bayesianShrinkage(avgRating, totalRatings, globalAvg, priorStrength) {
   if (!avgRating || !totalRatings || !globalAvg || !priorStrength) {
     console.log("a parameter is missing while doing bayesian shrinkage");
     return false;
@@ -19,27 +61,4 @@ export function bayesianShrinkage(
   const numerator = totalRatings * avgRating + priorStrength * globalAvg;
   const denominator = totalRatings + priorStrength;
   return numerator / denominator / 5;
-}
-
-/**
- * @param {Array} localMeans array of objects containing mean and total
- * @returns {number|boolean} returns the average of all the means or false if no average found
- */
-export function globalAverage(localMeans) {
-  if (!localMeans) {
-    console.log("local means is missing from global average");
-    return false;
-  }
-
-  let numerator = 0;
-  let denominator = 0;
-  for (let i in localMeans) {
-    numerator += localMeans[i].mean * localMeans[i].total;
-    denominator += localMeans[i].total;
-  }
-  if (denominator !== 0) return numerator / denominator;
-  else {
-    console.log("returning false while doing global average");
-    return false;
-  }
 }

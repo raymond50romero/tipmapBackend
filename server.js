@@ -12,8 +12,8 @@ import newPostsRouter from "./routes/posts/newPosts.js";
 import getPostsRouter from "./routes/posts/getPosts.js";
 import checkUser from "./routes/auth/checkUser.js";
 
-// add urls in the future
-const allowedOrigins = ["http://localhost:3000"];
+// TODO add urls in the future
+const allowedOrigins = ["http://localhost:3000", "http://localhost:3002"];
 
 const corsOptions = {
   origin: function (origin, callback) {
