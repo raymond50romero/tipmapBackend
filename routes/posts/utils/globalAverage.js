@@ -4,7 +4,7 @@ import { getAvgPostById } from "../../../database/averagePosts.database.js";
  * get the global average of all the posts
  *
  * @param {Object} postsWithDistance
- * @returns {Object} contains weekday and weekend global average
+ * @returns {Promise<Object>} contains weekday and weekend global average
  */
 export default async function getGlobalAverage(postsWithDistance) {
   if (!postsWithDistance) return false;
@@ -13,9 +13,9 @@ export default async function getGlobalAverage(postsWithDistance) {
   const localWeekdayMeans = [];
   const localWeekendMeans = [];
   for (let i in postsWithDistance) {
-    if (!avgPostIds.includes(postsWithDistance[i].average_id_link)) {
-      avgPostIds.push(postsWithDistance[i].average_id_link);
-      let avgPost = await getAvgPostById(postsWithDistance[i].average_id_link);
+    if (!avgPostIds.includes(postsWithDistance[i].mapbox_id)) {
+      avgPostIds.push(postsWithDistance[i].mapbox_id);
+      let avgPost = await getAvgPostById(postsWithDistance[i].mapbox_id);
 
       localWeekdayMeans[i] = {
         mean: avgPost.weekday_tips_average,

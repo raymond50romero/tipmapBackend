@@ -69,15 +69,6 @@ router.get("/", async (req, res) => {
         .send("Server error, unable to retrieve posts for bounds");
     }
 
-    /* FIXME
-     * this won't work because posts is an array, need to iterate through each deleting it 
-     * or delete them as they are fetched from the database
-    delete posts.dataValues.deletedAt;
-    delete posts.dataValues.post_id;
-    delete posts.dataValues.updatedAt;
-    delete posts.dataValues.user_id_link;
-    */
-
     // order the posts to prepare it to find the global average
     let postsWithDistance = sortPosts(posts, parsedUserLong, parsedUserLat);
     if (!postsWithDistance) {
@@ -85,8 +76,10 @@ router.get("/", async (req, res) => {
     }
 
     // posts are ordered, get global average for bayesian shrinkage
-    const { weekdayGlobalAverage, weekendGlobalAverage } =
-      getGlobalAverage(postsWithDistance);
+    const {
+      weekdayGlobalAverage: weekdayGlobalAverage,
+      weekendGlobalAverage: weekendGlobalAverage,
+    } = await getGlobalAverage(postsWithDistance);
     if (!weekdayGlobalAverage || !weekendGlobalAverage) {
       return res.status(500).send("unable to get post averages");
     }
@@ -96,7 +89,7 @@ router.get("/", async (req, res) => {
     // priorStrength at 1: .36 .46 .76
     // priorStrength at 20: .51 .52 .55
     // conclusion, the more data you get, the highter the priorStrength
-    const weightsData = doBayesianShrinkage(
+    const weightsData = await doBayesianShrinkage(
       postsWithDistance,
       weekdayGlobalAverage,
       weekendGlobalAverage,
@@ -105,6 +98,7 @@ router.get("/", async (req, res) => {
       return res.status(500).send("unable to get weights data");
     }
 
+    console.log("success! sending package: ", postsWithDistance, weightsData);
     return res
       .status(200)
       .json({ posts: postsWithDistance, weightsData: weightsData });

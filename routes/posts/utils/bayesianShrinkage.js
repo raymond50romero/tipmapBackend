@@ -4,7 +4,7 @@ import { getAvgPostById } from "../../../database/averagePosts.database.js";
  * @param {Object} postsWithDistance
  * @param {Number} weekdayGlobalAverage
  * @param {Number} weekendGlobalAverage
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 export default async function doBayesianShrinkage(
   postsWithDistance,
@@ -17,9 +17,9 @@ export default async function doBayesianShrinkage(
 
   let weightsCount = 0;
   for (let i in postsWithDistance) {
-    if (!avgPostIds.includes(postsWithDistance[i].average_id_link)) {
-      avgPostIds.push(postsWithDistance[i].average_id_link);
-      let avgPost = await getAvgPostById(postsWithDistance[i].average_id_link);
+    if (!avgPostIds.includes(postsWithDistance[i].mapbox_id)) {
+      avgPostIds.push(postsWithDistance[i].mapbox_id);
+      let avgPost = await getAvgPostById(postsWithDistance[i].mapbox_id);
       let weekdayBayesian = bayesianShrinkage(
         avgPost.weekday_tips_average,
         avgPost.weekday_tips_count,

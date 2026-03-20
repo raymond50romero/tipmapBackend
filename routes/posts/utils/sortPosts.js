@@ -10,6 +10,7 @@ export default function sortPosts(posts, parsedUserLong, parsedUserLat) {
     delete postData.post_id;
     delete postData.updatedAt;
     delete postData.user_id_link;
+    delete postData.average_id_link;
     const postLong = toNumber(postData.longitude);
     const postLat = toNumber(postData.latitude);
     const distance =
