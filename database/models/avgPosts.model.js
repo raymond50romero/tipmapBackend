@@ -69,6 +69,23 @@ export const avgPosts = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    overall_average: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        const w = { tips: 0.26, other: 0.16 };
+        const score =
+          this.weekday_tips_average * w.tips +
+          this.weekend_tips_average * w.tips +
+          this.work_environment_average * w.other +
+          this.management_average * w.other +
+          this.clientele_average * w.other;
+
+        return parseFloat(score.toFixed(2));
+      },
+      set(value) {
+        throw new Error("Do not try to set the overall_rating value! ", value);
+      },
+    },
   },
   {
     timestamps: true,

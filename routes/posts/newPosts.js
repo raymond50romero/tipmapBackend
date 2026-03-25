@@ -34,10 +34,6 @@ router.post("/", authorizeUser, async (req, res) => {
     comment,
   } = req.body;
 
-  console.log();
-  console.log("this is req.body: ", req.body);
-  console.log();
-
   const user = req.user;
   if (!user) return res.status(400).send("no user found");
   if (!mapCenter) return res.status(400).send("No map center");
@@ -80,7 +76,6 @@ router.post("/", authorizeUser, async (req, res) => {
     // if not create a new average post using mapbox id
     let avgPost;
     const ifAvgPost = await getAvgPostById(mapboxId);
-    console.log("this is result from trying to find ifAvgPost: ", ifAvgPost);
     if (ifAvgPost) {
       const newWeekday = getNewAverage(
         ifAvgPost.weekday_tips_average,
@@ -127,16 +122,8 @@ router.post("/", authorizeUser, async (req, res) => {
         console.log("unable to update average result");
       }
     } else {
-      // chatgpt way of truncating
-      //const truncatedLong = Math.trunc(longitude * 1e6) / 1e6;
-      //const truncatedLat = Math.trunc(latitude * 1e6) / 1e6;
-      //gemini way of truncating, better
       const truncatedLong = parseFloat(longitude.toFixed(6));
       const truncatedLat = parseFloat(latitude.toFixed(6));
-      console.log();
-      console.log("this is t long: ", truncatedLong);
-      console.log("this is t lat: ", truncatedLat);
-      console.log();
       avgPost = await createAvgPost(
         mapboxId,
         truncatedLong,
