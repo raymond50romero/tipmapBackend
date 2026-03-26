@@ -79,7 +79,6 @@ router.get("/", async (req, res) => {
     const {
       weekdayGlobalAverage: weekdayGlobalAverage,
       weekendGlobalAverage: weekendGlobalAverage,
-      allAverages: allAverages,
     } = await getGlobalAverage(postsWithDistance);
     if (!weekdayGlobalAverage || !weekendGlobalAverage) {
       return res.status(500).send("unable to get post averages");
@@ -99,11 +98,9 @@ router.get("/", async (req, res) => {
       return res.status(500).send("unable to get weights data");
     }
 
-    console.log("success! sending package: ", postsWithDistance, weightsData);
     return res.status(200).json({
       posts: postsWithDistance,
       weightsData: weightsData,
-      averages: allAverages,
     });
   } catch (error) {
     console.log("error getting posts:", error);

@@ -6,6 +6,9 @@ const databaseUsername = process.env.DATABASE_USERNAME;
 const databaseHost = process.env.DATABASE_HOST;
 const databasePassword = process.env.DATABASE_PASSWORD;
 
+/**
+ * connect to database via sequelize
+ */
 export const sequelize = new Sequelize({
   dialect: "mariadb",
   database: databaseName,
@@ -13,15 +16,15 @@ export const sequelize = new Sequelize({
   password: databasePassword,
   host: databaseHost,
   dialectOptions: {
-    allowPublicKeyRetrieval: true, // <-- fix
-    multipleStatements: true, // optional, only if you need it
+    allowPublicKeyRetrieval: true,
+    multipleStatements: true,
   },
 });
 
 sequelize
   .authenticate()
   .then(() => {
-    console.log("it synced");
+    console.log("Database connected successfully.");
   })
   .catch((error) => {
     console.log("unable to connect", error);

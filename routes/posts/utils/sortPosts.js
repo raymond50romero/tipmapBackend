@@ -6,11 +6,12 @@ export default function sortPosts(posts, parsedUserLong, parsedUserLat) {
   const postsWD = posts.map((post) => {
     console.log("this is post inside postswithdistance map: ", post);
     const postData = post.get({ plain: true });
+    // averages is already included in the plain object by Sequelize
     delete postData.deletedAt;
     delete postData.post_id;
     delete postData.updatedAt;
     delete postData.user_id_link;
-    delete postData.average_id_link;
+    // delete postData.average_id_link; // keep it if needed, but averages is what we want
     const postLong = toNumber(postData.longitude);
     const postLat = toNumber(postData.latitude);
     const distance =

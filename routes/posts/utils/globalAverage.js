@@ -12,7 +12,6 @@ export default async function getGlobalAverage(postsWithDistance) {
   let avgPostIds = [];
   const localWeekdayMeans = [];
   const localWeekendMeans = [];
-  const allAverages = [];
   for (let i in postsWithDistance) {
     if (!avgPostIds.includes(postsWithDistance[i].mapbox_id)) {
       avgPostIds.push(postsWithDistance[i].mapbox_id);
@@ -26,17 +25,6 @@ export default async function getGlobalAverage(postsWithDistance) {
         mean: avgPost.weekend_tips_average,
         total: avgPost.weekend_tips_average,
       };
-      allAverages[i] = {
-        mapboxId: avgPost.mapbox_id,
-        longitude: avgPost.longitude,
-        latitude: avgPost.latitude,
-        weekdayTipsAverage: avgPost.weekday_tips_average,
-        weekendTipsAverage: avgPost.weekend_tips_average,
-        workEnvironmentAverage: avgPost.work_environment_average,
-        managementAverage: avgPost.management_average,
-        clienteleAverage: avgPost.clientele_average,
-        overallAverage: avgPost.overall_average,
-      };
     }
   }
   const weekdayGA = globalAverage(localWeekdayMeans);
@@ -45,7 +33,6 @@ export default async function getGlobalAverage(postsWithDistance) {
   return {
     weekdayGlobalAverage: weekdayGA,
     weekendGlobalAverage: weekendGA,
-    allAverages: allAverages,
   };
 }
 

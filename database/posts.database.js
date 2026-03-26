@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 
 import { sequelize } from "./models/connect.js";
-import { posts } from "./models/posts.model.js";
+import { posts, avgPosts } from "./models/associations.js";
 
 /**
  *
@@ -149,7 +149,15 @@ export async function getPostsInBounds(bounds) {
     .sync()
     .then(async () => {
       return await posts
-        .findAll({ where: whereClause })
+        .findAll({
+          where: whereClause,
+          include: [
+            {
+              model: avgPosts,
+              as: "averages",
+            },
+          ],
+        })
         .then((res) => {
           if (res) {
             console.log("found posts within bounds: ", res.length);
